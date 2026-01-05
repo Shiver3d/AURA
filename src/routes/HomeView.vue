@@ -10,7 +10,7 @@
 -->
 
 <template>
-  <div class="home-root container">
+  <div class="home-root-container">
     <section class="hero glass center">
       <div class="hero-inner">
         <h1>Navegue pelo SkinSense AI</h1>
@@ -108,8 +108,10 @@ onMounted(async () => {
 
 <style scoped>
 .hero {
-  padding: 36px;
-  margin: 20px 0;
+  padding: 60px 0;
+  margin-top: 10vh;
+  margin-right: 2vw;
+  margin-left: 2vw;
 }
 .hero-inner {
   text-align: center;

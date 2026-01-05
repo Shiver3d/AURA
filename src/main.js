@@ -1,6 +1,6 @@
 import { createApp } from 'vue'
 import App from './App.vue'
-import './assets/style.scss'
+import './main.scss'
 import 'focus-visible'
 import router from './routes'
 import { Toaster } from 'vue-sonner'

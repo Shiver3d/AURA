@@ -51,24 +51,25 @@ const q = ref("");
 const router = useRouter();
 
 const userName = ref("Visitante");
-const theme = ref("light");
+const theme = ref("dark");
 
 onMounted(() => {
   const u = JSON.parse(localStorage.getItem("skin_user") || "null");
   if (u && u.name) userName.value = u.name;
-  const t = localStorage.getItem("skin_theme") || "light";
+  // Sincroniza com o sistema de tema do App.vue
+  const t = localStorage.getItem("theme") || "dark";
   theme.value = t;
-  applyTheme(t);
+  // Garante que o tema está aplicado (App.vue também faz isso, mas garantimos aqui)
+  document.documentElement.setAttribute("data-theme", t);
 });
-
-function applyTheme(t) {
-  document.documentElement.classList.toggle("dark-mode", t === "dark");
-}
 
 function onToggleTheme() {
   theme.value = theme.value === "dark" ? "light" : "dark";
-  localStorage.setItem("skin_theme", theme.value);
-  applyTheme(theme.value);
+  localStorage.setItem("theme", theme.value);
+  // Usa o mesmo sistema do App.vue
+  document.documentElement.setAttribute("data-theme", theme.value);
+  // Dispara evento customizado para sincronizar com App.vue
+  window.dispatchEvent(new CustomEvent("theme-changed"));
 }
 
 const themeIcon = computed(() => (theme.value === "dark" ? "🌙" : "☀️"));
@@ -94,7 +95,7 @@ function goAnalysis() {
   top: 12px;
   left: 12px;
   right: 12px;
-  height: 64px;
+  height: 7vh;
   display: flex;
   align-items: center;
   justify-content: space-between;

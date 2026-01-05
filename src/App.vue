@@ -11,7 +11,7 @@
 
 <script setup>
 import { useRoute } from 'vue-router'
-import { watchEffect, ref } from 'vue'
+import { watchEffect, ref, onMounted } from 'vue'
 import HeaderBar from './components/HeaderBar.vue'
 import FooterBar from './components/FooterBar.vue'
 import DynamicWaves from './components/DynamicWaves.vue'
@@ -19,6 +19,27 @@ import './main.scss'
 
 const route = useRoute()
 const theme = ref(localStorage.getItem('theme') || 'dark')
+
+// Inicializa o tema imediatamente na montagem
+onMounted(() => {
+  document.documentElement.setAttribute('data-theme', theme.value)
+  
+  // Escuta mudanças no localStorage para sincronizar entre componentes
+  window.addEventListener('storage', (e) => {
+    if (e.key === 'theme') {
+      theme.value = e.newValue || 'dark'
+    }
+  })
+  
+  // Também escuta mudanças customizadas (quando o HeaderBar atualiza o mesmo window)
+  const handleThemeChange = () => {
+    const newTheme = localStorage.getItem('theme') || 'dark'
+    if (newTheme !== theme.value) {
+      theme.value = newTheme
+    }
+  }
+  window.addEventListener('theme-changed', handleThemeChange)
+})
 
 watchEffect(() => {
   document.documentElement.setAttribute('data-theme', theme.value)
