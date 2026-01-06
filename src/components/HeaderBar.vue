@@ -12,7 +12,11 @@
 <template>
   <header class="header glass">
     <div class="left">
-      <div class="brand">
+      <button v-if="!isHome" class="back-btn-header" @click="goBack" title="Voltar">
+        <Icon icon="tabler:arrow-left" width="18" height="18" />
+        Voltar
+      </button>
+      <div v-else class="brand">
         Bem vindo, <strong>{{ userName }}</strong>
       </div>
     </div>
@@ -27,40 +31,66 @@
       </div>
     </div>
     <div class="right">
-      <button class="icon-btn" @click="goHome" title="Home">🏠</button>
-      <button class="icon-btn" @click="goUser" title="Perfil">👤</button>
+      <button class="icon-btn" @click="goHome" title="Home">
+        <Icon icon="tabler:home" width="30" height="30" />
+      </button>
+      <button class="icon-btn profile-btn" @click="goUser" title="Perfil">
+        <img v-if="userAvatar" :src="userAvatar" alt="Perfil" class="profile-avatar" />
+        <Icon v-else icon="tabler:user" width="30" height="30" />
+      </button>
       <button class="icon-btn" @click="goAnalysis" title="AI Analysis">
-        ⭐
+        <Icon icon="tabler:sparkles" width="30" height="30" />
       </button>
       <button
         class="icon-btn"
         @click="onToggleTheme"
         :title="theme === 'dark' ? 'Modo Claro' : 'Modo Escuro'"
       >
-        {{ themeIcon }}
+        <Icon :icon="theme === 'dark' ? 'tabler:moon' : 'tabler:sun'" width="30" height="30" />
       </button>
     </div>
   </header>
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from "vue";
-import { useRouter } from "vue-router";
+import { ref, computed, onMounted, onBeforeUnmount } from "vue";
+import { useRouter, useRoute } from "vue-router";
+import { Icon } from "@iconify/vue";
 
 const q = ref("");
 const router = useRouter();
+const route = useRoute();
 
 const userName = ref("Visitante");
 const theme = ref("dark");
+const userAvatar = ref(null);
+
+function loadUserData() {
+  const u = JSON.parse(localStorage.getItem("skin_user") || "null");
+  if (u) {
+    if (u.name) userName.value = u.name;
+    if (u.avatar) userAvatar.value = u.avatar;
+    else userAvatar.value = null;
+  }
+}
+
+function handleUserUpdate() {
+  loadUserData();
+}
 
 onMounted(() => {
-  const u = JSON.parse(localStorage.getItem("skin_user") || "null");
-  if (u && u.name) userName.value = u.name;
+  loadUserData();
   // Sincroniza com o sistema de tema do App.vue
   const t = localStorage.getItem("theme") || "dark";
   theme.value = t;
   // Garante que o tema está aplicado (App.vue também faz isso, mas garantimos aqui)
   document.documentElement.setAttribute("data-theme", t);
+  // Escuta atualizações do usuário
+  window.addEventListener("user-updated", handleUserUpdate);
+});
+
+onBeforeUnmount(() => {
+  window.removeEventListener("user-updated", handleUserUpdate);
 });
 
 function onToggleTheme() {
@@ -72,7 +102,6 @@ function onToggleTheme() {
   window.dispatchEvent(new CustomEvent("theme-changed"));
 }
 
-const themeIcon = computed(() => (theme.value === "dark" ? "🌙" : "☀️"));
 
 function onSearch() {
   if (!q.value) return;
@@ -86,6 +115,12 @@ function goUser() {
 }
 function goAnalysis() {
   router.push("/ai-analysis");
+}
+
+const isHome = computed(() => route.path === "/home");
+
+function goBack() {
+  router.back();
 }
 </script>
 
@@ -106,6 +141,25 @@ function goAnalysis() {
   font-size: 14px;
   color: var(--muted);
 }
+.back-btn-header {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  background: var(--panel-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 10px;
+  color: var(--text);
+  cursor: pointer;
+  font-size: 14px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+  backdrop-filter: blur(8px);
+}
+.back-btn-header:hover {
+  transform: translateX(-4px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  background: var(--accent-solid);
+}
 .center {
   flex: 1;
   display: flex;
@@ -124,10 +178,31 @@ function goAnalysis() {
   align-items: center;
 }
 .icon-btn {
+  color: var(--text);
   background: transparent;
   border: none;
   padding: 8px;
   border-radius: 10px;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+.icon-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  transform: scale(1.1);
+}
+.profile-btn {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  overflow: hidden;
+}
+.profile-avatar {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
 }
 </style>

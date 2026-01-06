@@ -94,7 +94,7 @@ function drawWaves(el) {
       const y = height * 0.5 + (n - 0.5) * (layer.amp || 60);
       pts.push({ x, y });
     }
-
+    // Linha suave com pontos de controle (quadraticCurveTo)
     if (pts.length) ctx.moveTo(pts[0].x, pts[0].y);
     for (let i = 1; i < pts.length; i++) {
       const prev = pts[i - 1];
@@ -103,6 +103,7 @@ function drawWaves(el) {
       const cy = (prev.y + cur.y) / 2;
       ctx.quadraticCurveTo(prev.x, prev.y, cx, cy);
     }
+    
     if (pts.length > 0) {
       ctx.lineTo(width, pts[pts.length - 1].y);
     }

@@ -16,8 +16,14 @@
         <h1>Navegue pelo SkinSense AI</h1>
         <p>Selecione suas opções</p>
         <div class="hero-actions">
-          <button class="btn" @click="goAnalysis">⭐ Diagnóstico</button>
-          <button class="btn ghost" @click="focusSearch">🔎 Produtos</button>
+          <button class="btn" @click="goAnalysis">
+            <Icon icon="tabler:sparkles" width="30" height="30" />
+            Diagnóstico
+          </button>
+          <button class="btn" @click="focusSearch">
+            <Icon icon="tabler:search" width="30" height="30" />
+            Produtos
+          </button>
         </div>
       </div>
     </section>
@@ -54,6 +60,7 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
+import { Icon } from "@iconify/vue";
 
 const router = useRouter();
 const card1 = ref(null);
@@ -107,6 +114,14 @@ onMounted(async () => {
 </script>
 
 <style scoped>
+.btn {
+  justify-content: center;
+  font-size: 1.5rem;
+  width: 14vw;
+  height: 10vh;
+  margin: 19px;
+}
+
 .hero {
   padding: 60px 0;
   margin-top: 10vh;
@@ -128,6 +143,11 @@ onMounted(async () => {
   display: flex;
   gap: 12px;
   justify-content: center;
+}
+.hero-actions .btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .cards {

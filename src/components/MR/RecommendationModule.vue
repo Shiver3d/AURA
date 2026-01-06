@@ -123,10 +123,12 @@ function toggleFilter(k) {
 <style scoped>
 .mr-i {
   padding: 18px;
+  margin-top: 6vh;
 }
 .mr-i-status-panel {
   padding: 14px;
   margin-bottom: 12px;
+  text-align: center;
 }
 .mr-i-filters {
   padding: 12px;

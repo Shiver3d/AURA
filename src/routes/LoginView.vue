@@ -26,7 +26,7 @@
             v-model="email"
             type="email"
             required
-            placeholder="seu@exemplo.com"
+            placeholder="seuemail@exemplo.com"
           />
         </label>
         <div class="actions">
@@ -98,7 +98,7 @@ function submit() {
   padding: 10px 12px;
   border-radius: 10px;
   border: 1px solid rgba(0, 0, 0, 0.06);
-  background: rgba(255, 255, 255, 0.9);
+  background: var(--muted);
 }
 .actions {
   display: flex;

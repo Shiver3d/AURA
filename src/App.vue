@@ -59,5 +59,4 @@ watchEffect(() => {
 </template>
 
 <style>
-/* App-level spacing or overrides can go here */
 </style>

@@ -23,6 +23,6 @@ import RecommendationModule from "../components/MR/RecommendationModule.vue";
   padding-top: 30px;
 }
 .ai-root h1 {
-  margin-bottom: 12px;
+ display: none;
 }
 </style>
