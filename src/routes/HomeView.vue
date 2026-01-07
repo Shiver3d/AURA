@@ -13,7 +13,7 @@
   <div class="home-root-container">
     <section class="hero glass center">
       <div class="hero-inner">
-        <h1>Navegue pelo SkinSense AI</h1>
+        <h1>Navegue pelo AURA</h1>
         <p>Selecione suas opções</p>
         <div class="hero-actions">
           <button class="btn" @click="goAnalysis">

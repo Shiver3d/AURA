@@ -11,7 +11,7 @@
 <template>
   <footer class="footer glass">
     <div class="container footer-inner">
-      <div>© SkinSense AI — 2025</div>
+      <div>© AURA — 2025</div>
       <div class="links">Sobre • Termos • Contato</div>
     </div>
   </footer>

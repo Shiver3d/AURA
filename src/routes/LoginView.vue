@@ -13,7 +13,7 @@
 <template>
   <div class="login-root center" :class="$rootClass">
     <div class="login-card glass">
-      <h1>Bem-vindo ao SkinSense AI</h1>
+      <h1>Bem-vindo ao AURA</h1>
       <p>Insira suas informações para continuar.</p>
       <form @submit.prevent="submit">
         <label class="field">
@@ -98,7 +98,7 @@ function submit() {
   padding: 10px 12px;
   border-radius: 10px;
   border: 1px solid rgba(0, 0, 0, 0.06);
-  background: var(--muted);
+  background: #ffffffda;
 }
 .actions {
   display: flex;
