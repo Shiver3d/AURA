@@ -116,13 +116,13 @@ margin-top: 6vh;
   margin-top: 8px;
 }
 .tag {
-  background: rgba(0, 0, 0, 0.04);
+  background: var(--glass-bg);
   padding: 4px 8px;
   border-radius: 999px;
   font-size: 12px;
 }
 .tag.green {
-  background: linear-gradient(90deg, #e6fff7, #d0fff0);
+  background: var(--color-cyan);
 }
 
 .modal-overlay {

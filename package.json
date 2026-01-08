@@ -10,8 +10,11 @@
   },
   "dependencies": {
     "@iconify/vue": "^5.0.0",
+    "@supabase/supabase-js": "^2.90.0",
     "animejs": "^4.2.2",
+    "axios": "^1.13.2",
     "date-fns": "^4.1.0",
+    "dotenv": "^17.2.3",
     "focus-visible": "^5.2.1",
     "lucide-vue-next": "^0.562.0",
     "scss": "^0.2.4",

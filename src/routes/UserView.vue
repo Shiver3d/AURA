@@ -68,7 +68,17 @@ const router = useRouter();
 const user = ref({ name: "Visitante" });
 onMounted(() => {
   const u = JSON.parse(localStorage.getItem("skin_user") || "null");
-  if (u) user.value = u;
+  // ensure we load profile from profiles map to support multi-user profiles
+  if (u && u.email) {
+    const profilesRaw = localStorage.getItem("skin_profiles") || "{}";
+    const profiles = JSON.parse(profilesRaw);
+    const p = profiles[u.email] || u;
+    user.value = p;
+    // keep skin_user synchronized
+    localStorage.setItem("skin_user", JSON.stringify(p));
+  } else if (u) {
+    user.value = u;
+  }
 });
 
 const initials = computed(() =>
@@ -104,14 +114,19 @@ function handleFileUpload(event) {
   }
 
   const reader = new FileReader();
-  reader.onload = (e) => {
-    const avatarData = e.target.result;
-    user.value.avatar = avatarData;
-    // Salva no localStorage
-    localStorage.setItem("skin_user", JSON.stringify(user.value));
-    // Dispara evento para atualizar HeaderBar
-    window.dispatchEvent(new CustomEvent("user-updated"));
-  };
+    reader.onload = (e) => {
+      const avatarData = e.target.result;
+      user.value.avatar = avatarData;
+      // Salva no map de perfis por email
+      const profilesRaw = localStorage.getItem("skin_profiles") || "{}";
+      const profiles = JSON.parse(profilesRaw);
+      if (user.value.email) profiles[user.value.email] = user.value;
+      localStorage.setItem("skin_profiles", JSON.stringify(profiles));
+      // Atualiza usuário atual
+      localStorage.setItem("skin_user", JSON.stringify(user.value));
+      // Dispara evento para atualizar HeaderBar
+      window.dispatchEvent(new CustomEvent("user-updated"));
+    };
   reader.readAsDataURL(file);
 }
 
@@ -168,6 +183,7 @@ function open(i) {
 .back-btn:hover {
   transform: translateX(-4px);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  background: var(--accent-solid);
 }
 .user-panel {
   width: 90vw;
@@ -186,6 +202,7 @@ function open(i) {
   flex-direction: column;
   align-items: center;
   gap: 24px;
+  margin-right: 25vw;
 }
 .avatar {
   width: 240px;
@@ -216,7 +233,6 @@ function open(i) {
 }
 .avatar-upload-btn:hover {
   background: var(--accent-solid);
-  color: white;
   transform: translateY(-2px);
 }
 .status {

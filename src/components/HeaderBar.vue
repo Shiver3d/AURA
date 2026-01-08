@@ -30,25 +30,36 @@
         />
       </div>
     </div>
-    <div class="right">
-      <button class="icon-btn" @click="goHome" title="Home">
-        <Icon icon="tabler:home" width="30" height="30" />
+    <nav class="right">
+      <button :class="['icon-btn', { active: isHomeActive }]" @click="goHome" title="Home">
+        <div class="icon-wrap">
+          <Icon icon="tabler:home" width="30" height="30" />
+        </div>
+        <span class="label">Home</span>
       </button>
-      <button class="icon-btn profile-btn" @click="goUser" title="Perfil">
-        <img v-if="userAvatar" :src="userAvatar" alt="Perfil" class="profile-avatar" />
-        <Icon v-else icon="tabler:user" width="30" height="30" />
+
+      <button :class="['icon-btn', 'profile-btn', { active: isUserActive }]" @click="goUser" title="Perfil">
+        <div class="icon-wrap">
+          <img v-if="userAvatar" :src="userAvatar" alt="Perfil" class="profile-avatar" />
+          <Icon v-else icon="tabler:user" width="30" height="30" />
+        </div>
+        <span class="label">Você</span>
       </button>
-      <button class="icon-btn" @click="goAnalysis" title="AI Analysis">
-        <Icon icon="tabler:sparkles" width="30" height="30" />
+
+      <button :class="['icon-btn', { active: isMRActive }]" @click="goAnalysis" title="AI Analysis">
+        <div class="icon-wrap">
+          <Icon icon="tabler:sparkles" width="30" height="30" />
+        </div>
+        <span class="label">IA</span>
       </button>
-      <button
-        class="icon-btn"
-        @click="onToggleTheme"
-        :title="theme === 'dark' ? 'Modo Claro' : 'Modo Escuro'"
-      >
-        <Icon :icon="theme === 'dark' ? 'tabler:moon' : 'tabler:sun'" width="30" height="30" />
+
+      <button class="icon-btn" @click="onToggleTheme" :title="theme === 'dark' ? 'Modo Claro' : 'Modo Escuro'">
+        <div class="icon-wrap">
+          <Icon :icon="theme === 'dark' ? 'tabler:moon' : 'tabler:sun'" width="30" height="30" />
+        </div>
+        <span class="label">Tema</span>
       </button>
-    </div>
+    </nav>
   </header>
 </template>
 
@@ -118,6 +129,9 @@ function goAnalysis() {
 }
 
 const isHome = computed(() => route.path === "/home");
+const isHomeActive = computed(() => route.path === "/home");
+const isMRActive = computed(() => route.path === "/ai-analysis" || route.path === "/mr");
+const isUserActive = computed(() => route.path === "/user");
 
 function goBack() {
   router.back();
@@ -204,5 +218,53 @@ function goBack() {
   height: 100%;
   object-fit: cover;
   border-radius: 50%;
+}
+
+/* new styles for labels and active state */
+.icon-btn {
+  flex-direction: column;
+  gap: 6px;
+  padding: 6px 10px;
+}
+.icon-wrap {
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+}
+.label {
+  font-size: 11px;
+  color: var(--muted);
+}
+.icon-btn.active .icon-wrap {
+  background: linear-gradient(90deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));
+  box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+}
+
+/* Mobile: navbar fixed bottom and centered */
+@media (max-width: 768px) {
+  .header {
+    top: auto;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: auto;
+    padding: 8px 12px;
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
+    display: flex;
+    justify-content: center;
+  }
+  .center { display: none; }
+  .left { display: none; }
+  .right { gap: 14px; }
+  .icon-btn { padding: 6px; }
+}
+
+@media (max-width: 480px) {
+  .icon-wrap { width: 30px; height: 30px; }
+  .label { font-size: 10px; }
 }
 </style>

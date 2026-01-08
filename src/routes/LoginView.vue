@@ -12,13 +12,14 @@
 
 <template>
   <div class="login-root center" :class="$rootClass">
-    <div class="login-card glass">
+    <transition name="card">
+      <div class="login-card glass" :key="isSignup">
       <h1>Bem-vindo ao AURA</h1>
-      <p>Insira suas informações para continuar.</p>
+      <p>Faça login ou crie uma conta para continuar.</p>
       <form @submit.prevent="submit">
-        <label class="field">
+        <label class="field" v-if="isSignup">
           <span>Nome</span>
-          <input v-model="name" required placeholder="Seu nome" />
+          <input v-model="name" placeholder="Seu nome, como será visto e chamado." />
         </label>
         <label class="field">
           <span>Email</span>
@@ -29,38 +30,174 @@
             placeholder="seuemail@exemplo.com"
           />
         </label>
+        <label class="field">
+          <span>Senha</span>
+          <input
+            v-model="password"
+            type="password"
+            required
+            placeholder="Sua senha, sua confidência."
+          />
+        </label>
         <div class="actions">
-          <button class="btn" type="submit">Entrar</button>
+          <button class="btn" type="submit" :disabled="loading">
+            {{ isSignup ? "Criar conta" : "Entrar" }}
+          </button>
         </div>
+        <p>
+          <button class="link" @click="toggleMode" type="button">
+            {{ isSignup ? "Clique aqui para entrar na sua conta." : "Clique aqui para criar conta AURA." }}
+          </button>
+        </p>
+
+        <p>
+          <button class="link" @click="openRecovery" type="button">Recuperar senha</button>
+        </p>
       </form>
     </div>
+  </transition>
+
+  <transition name="fade">
+    <div v-if="loading" class="overlay">
+      <div class="spinner">Carregando...</div>
+    </div>
+  </transition>
+
+  <transition name="fade">
+    <div v-if="showPopup" class="modal">
+      <div class="modal-card">
+        <h3>Atenção</h3>
+        <p>{{ popupMessage }}</p>
+        <div class="modal-actions">
+          <button class="btn" @click="closePopup">Fechar</button>
+        </div>
+      </div>
+    </div>
+  </transition>
+
+  <transition name="fade">
+    <div v-if="showRecovery" class="modal">
+      <div class="modal-card">
+        <h3>Recuperar senha</h3>
+        <p>Insira seu e-mail para receber instruções de recuperação.</p>
+        <input v-model="recoveryEmail" type="email" placeholder="seuemail@exemplo.com" />
+        <div class="modal-actions">
+          <button class="btn" @click="sendRecovery">Enviar</button>
+          <button class="btn" @click="closeRecovery">Cancelar</button>
+        </div>
+      </div>
+    </div>
+  </transition>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { toast } from "vue-sonner";
+import { useAuth } from "../composables";
 
 const name = ref("");
 const email = ref("");
+const password = ref("");
+const isSignup = ref(false);
+const loading = ref(false);
+
+const showPopup = ref(false);
+const popupMessage = ref("");
+
+const showRecovery = ref(false);
+const recoveryEmail = ref("");
+
 const router = useRouter();
+const { signIn, signUp, getCurrentUser } = useAuth();
 
-onMounted(() => {
-  // prefill if present
-  const stored = JSON.parse(localStorage.getItem("skin_user") || "null");
-  if (stored) {
-    name.value = stored.name;
-    email.value = stored.email;
+function toggleMode() {
+  isSignup.value = !isSignup.value;
+}
+
+function openRecovery() {
+  recoveryEmail.value = email.value || "";
+  showRecovery.value = true;
+}
+
+function closeRecovery() {
+  showRecovery.value = false;
+}
+
+function closePopup() {
+  showPopup.value = false;
+}
+
+function validatePassword(pw) {
+  if (!pw || pw.length < 8) {
+    popupMessage.value = "A senha deve ter pelo menos 8 caracteres.";
+    return false;
   }
-});
+  const hasNumber = /\d/.test(pw);
+  const hasSpecial = /[!@#$%^&*(),.?":{}|<>]/.test(pw);
+  if (!hasNumber || !hasSpecial) {
+    popupMessage.value = "A senha deve conter ao menos um número e um caractere especial.";
+    return false;
+  }
+  return true;
+}
 
-function submit() {
-  const user = { name: name.value.trim(), email: email.value.trim() };
-  localStorage.setItem("skin_user", JSON.stringify(user));
-  toast.success("Bem-vindo, " + user.name + "!");
-  // smooth transition
-  setTimeout(() => router.push("/home"), 350);
+async function sendRecovery() {
+  // Placeholder: show toast and close modal. Integrar com supabase se desejar.
+  if (!recoveryEmail.value) {
+    toast.error("Insira um e-mail válido para recuperação.");
+    return;
+  }
+  showRecovery.value = false;
+  toast.success("Se este e-mail estiver cadastrado, instruções foram enviadas.");
+}
+
+async function submit() {
+  loading.value = true;
+  try {
+    if (isSignup.value) {
+      // validar senha localmente antes de criar
+      if (!validatePassword(password.value)) {
+        showPopup.value = true;
+        loading.value = false;
+        return;
+      }
+      await signUp(email.value, password.value);
+      toast.success("Conta criada. Verifique seu e-mail se necessário.");
+
+      // salva perfil persistente por email
+      const profilesRaw = localStorage.getItem("skin_profiles") || "{}";
+      const profiles = JSON.parse(profilesRaw);
+      const profile = { name: name.value.trim(), email: email.value.trim(), avatar: null };
+      profiles[email.value.trim()] = profile;
+      localStorage.setItem("skin_profiles", JSON.stringify(profiles));
+
+      // define usuário atual
+      localStorage.setItem("skin_user", JSON.stringify(profile));
+    } else {
+      await signIn(email.value, password.value);
+      toast.success("Login efetuado com sucesso!");
+
+      // carrega perfil persistente por email (se existir)
+      const profilesRaw = localStorage.getItem("skin_profiles") || "{}";
+      const profiles = JSON.parse(profilesRaw);
+      const p = profiles[email.value.trim()];
+      const profile = p || { name: name.value.trim(), email: email.value.trim(), avatar: null };
+      // persiste profile caso não existisse
+      profiles[email.value.trim()] = profile;
+      localStorage.setItem("skin_profiles", JSON.stringify(profiles));
+      localStorage.setItem("skin_user", JSON.stringify(profile));
+    }
+
+    await getCurrentUser();
+    setTimeout(() => router.push("/home"), 250);
+  } catch (err) {
+    console.error(err);
+    toast.error(err?.message || "Erro ao autenticar");
+  } finally {
+    loading.value = false;
+  }
 }
 </script>
 
@@ -106,6 +243,85 @@ function submit() {
   margin-top: 12px;
 }
 .btn {
-  min-width: 110px;
+  justify-content: center;
+  width: 30vw;
+  min-width: 120px;
 }
+.link {
+  text-align: center;
+  background: none;
+  border: none;
+  padding-top: 1rem;
+  color: var(--accent);
+  cursor: pointer;
+}
+
+.link:hover {
+  text-decoration: underline;
+}
+
+/* transitions and modal */
+.fade-enter-active, .fade-leave-active {
+  transition: opacity 200ms ease;
+}
+.fade-enter-from, .fade-leave-to {
+  opacity: 0;
+}
+.card-enter-active, .card-leave-active {
+  transition: transform 240ms cubic-bezier(.2,.9,.3,1), opacity 200ms ease;
+}
+.card-enter-from {
+  transform: translateY(8px) scale(.995);
+  opacity: 0;
+}
+.card-leave-to {
+  transform: translateY(-6px) scale(.995);
+  opacity: 0;
+}
+.overlay {
+  position: fixed;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0,0,0,0.35);
+  z-index: 80;
+}
+.spinner {
+  padding: 18px 26px;
+  background: rgba(255,255,255,0.96);
+  border-radius: 12px;
+  color: var(--text);
+  font-weight: 600;
+}
+.modal {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0,0,0,0.28);
+  z-index: 90;
+}
+.modal-card {
+  width: 360px;
+  max-width: 94%;
+  background: var(--bg);
+  padding: 18px;
+  border-radius: 12px;
+  box-shadow: 0 8px 30px rgba(2,6,23,0.16);
+}
+.modal-card h3 {
+  margin: 0 0 8px;
+}
+.modal-actions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+  margin-top: 12px;
+}
+
 </style>

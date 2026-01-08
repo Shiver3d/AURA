@@ -12,6 +12,7 @@
 */
 
 import { createRouter, createWebHistory } from 'vue-router'
+import { supabase } from '../services/supabase'
 
 const Login = () => import('./LoginView.vue')
 const Home = () => import('./HomeView.vue')
@@ -29,5 +30,23 @@ const routes = [
 ]
 
 const router = createRouter({ history: createWebHistory(), routes })
+
+// Global guard: protect routes from being accessed without authentication
+router.beforeEach(async (to, from, next) => {
+  // allow access to login route always
+  if (to.path === '/login') return next()
+
+  try {
+    const { data } = await supabase.auth.getUser()
+    const user = data?.user
+    if (!user) {
+      return next({ path: '/login' })
+    }
+    return next()
+  } catch (err) {
+    // fallback: redirect to login
+    return next({ path: '/login' })
+  }
+})
 
 export default router
