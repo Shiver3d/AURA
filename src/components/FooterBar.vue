@@ -38,4 +38,39 @@
   color: var(--muted);
   font-size: 13px;
 }
+
+/* Responsive Design for Tablet (768px) */
+@media (max-width: 768px) {
+  .footer {
+    left: 8px;
+    right: 8px;
+    bottom: 8px;
+    padding: 8px 10px;
+  }
+  .footer-inner {
+    flex-direction: column;
+    gap: 6px;
+    text-align: center;
+    font-size: 12px;
+  }
+}
+
+/* Responsive Design for Mobile (480px) */
+@media (max-width: 480px) {
+  .footer {
+    left: 4px;
+    right: 4px;
+    bottom: 4px;
+    padding: 6px 8px;
+  }
+  .footer-inner {
+    flex-direction: column;
+    gap: 4px;
+    text-align: center;
+    font-size: 11px;
+  }
+  .links {
+    font-size: 10px;
+  }
+}
 </style>

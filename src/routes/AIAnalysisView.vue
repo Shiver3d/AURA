@@ -25,4 +25,21 @@ import RecommendationModule from "../components/MR/RecommendationModule.vue";
 .ai-root h1 {
  display: none;
 }
+
+/* Responsive Design for Mobile & Tablet */
+@media (max-width: 768px) {
+  .ai-root {
+    padding-top: 8vh;
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .ai-root {
+    padding-top: 6vh;
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+  }
+}
 </style>

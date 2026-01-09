@@ -19,31 +19,45 @@ import './main.scss'
 
 const route = useRoute()
 const theme = ref(localStorage.getItem('theme') || 'dark')
+const colorTheme = ref(localStorage.getItem('colorTheme') || 'blue')
 
 // Inicializa o tema imediatamente na montagem
 onMounted(() => {
   document.documentElement.setAttribute('data-theme', theme.value)
+  document.documentElement.setAttribute('data-color', colorTheme.value)
   
   // Escuta mudanças no localStorage para sincronizar entre componentes
   window.addEventListener('storage', (e) => {
     if (e.key === 'theme') {
       theme.value = e.newValue || 'dark'
     }
+    if (e.key === 'colorTheme') {
+      colorTheme.value = e.newValue || 'blue'
+    }
   })
   
-  // Também escuta mudanças customizadas (quando o HeaderBar atualiza o mesmo window)
+  // Escuta eventos customizados para mudanças de tema
   const handleThemeChange = () => {
     const newTheme = localStorage.getItem('theme') || 'dark'
     if (newTheme !== theme.value) {
       theme.value = newTheme
     }
   }
+  const handleColorChange = () => {
+    const newColor = localStorage.getItem('colorTheme') || 'blue'
+    if (newColor !== colorTheme.value) {
+      colorTheme.value = newColor
+    }
+  }
   window.addEventListener('theme-changed', handleThemeChange)
+  window.addEventListener('color-changed', handleColorChange)
 })
 
 watchEffect(() => {
   document.documentElement.setAttribute('data-theme', theme.value)
+  document.documentElement.setAttribute('data-color', colorTheme.value)
   localStorage.setItem('theme', theme.value)
+  localStorage.setItem('colorTheme', colorTheme.value)
 })
 </script>
 

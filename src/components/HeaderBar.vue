@@ -180,8 +180,8 @@ function goBack() {
   justify-content: center;
 }
 .search input {
-  width: 320px;
-  max-width: 50vw;
+  margin-left: 7vw;
+  width: 20vw;
   padding: 10px 12px;
   border-radius: 999px;
   border: 1px solid rgba(0, 0, 0, 0.06);
@@ -239,8 +239,8 @@ function goBack() {
   color: var(--muted);
 }
 .icon-btn.active .icon-wrap {
-  background: linear-gradient(90deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));
-  box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+  background: var(--accent-solid);
+  box-shadow: 0 6px 18px rgba(85, 81, 81, 0.075);
 }
 
 /* Mobile: navbar fixed bottom and centered */
@@ -261,10 +261,37 @@ function goBack() {
   .left { display: none; }
   .right { gap: 14px; }
   .icon-btn { padding: 6px; }
+  .search input {
+    width: 16vw;
+    font-size: 14px;
+  }
 }
 
 @media (max-width: 480px) {
-  .icon-wrap { width: 30px; height: 30px; }
-  .label { font-size: 10px; }
+  .header {
+    padding: 6px 8px;
+    gap: 4px;
+  }
+  .icon-wrap { 
+    width: 26px; 
+    height: 26px; 
+  }
+  .icon-wrap svg {
+    width: 22px !important;
+    height: 22px !important;
+  }
+  .label { 
+    font-size: 9px; 
+    margin-top: 2px;
+  }
+  .search input {
+    width: 12vw;
+    padding: 6px 8px;
+    font-size: 12px;
+  }
+  .profile-avatar {
+    width: 26px;
+    height: 26px;
+  }
 }
 </style>

@@ -207,16 +207,18 @@ async function submit() {
   padding: 48px;
 }
 .login-card {
-  width: 420px;
-  max-width: 94%;
-  padding: 28px;
+  width: 30vw;
+  padding: 40px;
   text-align: left;
 }
 .login-card h1 {
   margin: 0 0 6px;
   font-size: 20px;
+  font-weight: 700;
+  text-shadow: var(--txt-hover);
 }
 .login-card p {
+  font-size: 20px;
   margin: 0 0 18px;
   color: var(--muted);
 }
@@ -226,9 +228,10 @@ async function submit() {
 }
 .field span {
   display: block;
-  font-size: 12px;
+  font-size: 16px;
   margin-bottom: 6px;
   color: var(--muted);
+  
 }
 .field input {
   width: 100%;
@@ -257,7 +260,9 @@ async function submit() {
 }
 
 .link:hover {
+  transition: ease-in-out 200ms;
   text-decoration: underline;
+  text-shadow: var(--txt-hover);
 }
 
 /* transitions and modal */
@@ -322,6 +327,60 @@ async function submit() {
   gap: 8px;
   justify-content: flex-end;
   margin-top: 12px;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+  .login-card {
+    width: 95%;
+    padding: 20px;
+  }
+  .login-card h1 {
+    font-size: 18px;
+  }
+  .login-card p {
+    font-size: 14px;
+    margin-bottom: 14px;
+  }
+  .field input {
+    font-size: 16px;
+  }
+  .actions {
+    flex-direction: column;
+    align-items: center;
+  }
+  .btn {
+    width: 100%;
+    min-width: unset;
+  }
+}
+
+@media (max-width: 480px) {
+  .login-root {
+    padding: 24px;
+  }
+  .login-card {
+    width: 100%;
+    padding: 16px;
+  }
+  .field {
+    margin-bottom: 10px;
+  }
+  .field span {
+    font-size: 11px;
+  }
+  .link {
+    padding-top: 0.8rem;
+    font-size: 13px;
+  }
+  .modal-card {
+    width: 100%;
+    max-width: none;
+    padding: 16px;
+  }
+  .modal-card h3 {
+    font-size: 1.1rem;
+  }
 }
 
 </style>
