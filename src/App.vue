@@ -18,7 +18,20 @@ import DynamicWaves from './components/DynamicWaves.vue'
 import './main.scss'
 
 const route = useRoute()
-const theme = ref(localStorage.getItem('theme') || 'dark')
+
+// Detecta tema do navegador na primeira visita
+const getInitialTheme = () => {
+  const saved = localStorage.getItem('theme')
+  if (saved) return saved
+  
+  // Verifica preferência do sistema operacional
+  if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+    return 'dark'
+  }
+  return 'light'
+}
+
+const theme = ref(getInitialTheme())
 const colorTheme = ref(localStorage.getItem('colorTheme') || 'blue')
 
 // Inicializa o tema imediatamente na montagem

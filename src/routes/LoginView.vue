@@ -12,7 +12,7 @@
 
 <template>
   <div class="login-root center" :class="$rootClass">
-    <transition name="card">
+    <transition name="fade" mode="out-in">
       <div class="login-card glass" :key="isSignup">
       <h1>Bem-vindo ao AURA</h1>
       <p>Faça login ou crie uma conta para continuar.</p>
@@ -219,7 +219,7 @@ async function submit() {
 }
 .login-card p {
   font-size: 20px;
-  margin: 0 0 18px;
+  margin: 16px 0 10px;
   color: var(--muted);
 }
 .field {
@@ -237,8 +237,16 @@ async function submit() {
   width: 100%;
   padding: 10px 12px;
   border-radius: 10px;
-  border: 1px solid rgba(0, 0, 0, 0.06);
-  background: #ffffffda;
+  border: 1px solid var(--glass-border);
+  background: var(--panel-bg);
+  color: var(--text);
+  font-family: inherit;
+  transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+.field input:focus {
+  outline: none;
+  border-color: var(--accent-solid);
+  box-shadow: 0 0 12px var(--accent-solid);
 }
 .actions {
   display: flex;
@@ -249,6 +257,17 @@ async function submit() {
   justify-content: center;
   width: 30vw;
   min-width: 120px;
+  transition: all 0.3s ease, transform 0.2s ease;
+}
+.btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  background: var(--accent-solid);
+  text-shadow: var(--txt-hover);
+}
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 .link {
   text-align: center;
@@ -299,7 +318,7 @@ async function submit() {
   padding: 18px 26px;
   background: rgba(255,255,255,0.96);
   border-radius: 12px;
-  color: var(--text);
+  color: black;
   font-weight: 600;
 }
 .modal {
@@ -327,6 +346,19 @@ async function submit() {
   gap: 8px;
   justify-content: flex-end;
   margin-top: 12px;
+}
+
+/* Transitions - Fade suave como UserView */
+.fade-enter-active, .fade-leave-active {
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+.fade-enter-from {
+  opacity: 0;
+  transform: translateY(10px);
+}
+.fade-leave-to {
+  opacity: 0;
+  transform: translateY(-10px);
 }
 
 /* Mobile responsiveness */

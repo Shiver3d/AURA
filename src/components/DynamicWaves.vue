@@ -108,7 +108,14 @@ function drawWaves(el) {
       ctx.lineTo(width, pts[pts.length - 1].y);
     }
 
-    // Gradient colors: aceita overrides por layer.colors = ['rgba(...)','rgba(...)']
+    // Obtém as cores do CSS computado para usar as variáveis de tema
+    const computedStyle = getComputedStyle(document.documentElement);
+    const wave1Color = computedStyle.getPropertyValue('--wave-1').trim() || `rgba(0,229,255,${layer.alpha || 0.12})`;
+    const wave2Color = computedStyle.getPropertyValue('--wave-2').trim() || `rgba(111,214,255,${layer.alpha || 0.12})`;
+    const waveGradient1 = computedStyle.getPropertyValue('--wave-gradient-1').trim();
+    const waveGradient2 = computedStyle.getPropertyValue('--wave-gradient-2').trim();
+    
+    // Gradient colors: usa cores do CSS ou valores padrão
     const grad = ctx.createLinearGradient(
       0,
       height * 0.25,
@@ -124,15 +131,13 @@ function drawWaves(el) {
         1,
         layer.colors[1].replace(/ALPHA/g, String(layer.alpha || 0.12))
       );
-    } else if (idx === 2) {
-      grad.addColorStop(0, "rgba(138,43,255," + (layer.alpha || 0.08) + ")");
-      grad.addColorStop(1, "rgba(0,243,255," + (layer.alpha || 0.08) + ")");
+    } else if (idx === 2 && waveGradient1 && waveGradient2) {
+      // Terceira onda usa gradiente roxo/temático
+      grad.addColorStop(0, waveGradient1);
+      grad.addColorStop(1, waveGradient2);
     } else {
-      grad.addColorStop(0, "rgba(0,229,255," + (layer.alpha || 0.12) + ")");
-      grad.addColorStop(
-        1,
-        "rgba(111,214,255," + (layer.alpha || 0.12) * 0.9 + ")"
-      );
+      grad.addColorStop(0, wave1Color);
+      grad.addColorStop(1, wave2Color);
     }
 
     ctx.strokeStyle = grad;

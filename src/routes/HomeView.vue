@@ -13,7 +13,7 @@
   <div class="home-root-container">
     <section class="hero glass center">
       <div class="hero-inner">
-        <h1>Navegue pelo AURA</h1>
+        <h1 class="title">Navegue pelo AURA</h1>
         <p>Selecione suas opções</p>
         <div class="hero-actions">
           <button class="btn" @click="goAnalysis">
@@ -114,6 +114,13 @@ onMounted(async () => {
 </script>
 
 <style scoped>
+.title {
+  margin: 2vh 0 6px;
+  font-size: 20px;
+  font-weight: 700;
+  text-shadow: var(--txt-hover);
+}
+
 .btn {
   display: inline-flex;
   align-items: center;
@@ -140,6 +147,7 @@ onMounted(async () => {
   margin-bottom: 6px;
 }
 .hero-inner p {
+  text-shadow: var(--txt-hover);
   margin-bottom: 16px;
   color: var(--muted);
 }
@@ -209,18 +217,18 @@ onMounted(async () => {
     margin: 8px;
     min-width: 140px;
   }
-  
+
   .hero {
     padding: 40px 0;
     margin-top: 8vh;
     margin-right: 4vw;
     margin-left: 4vw;
   }
-  
+
   .hero-inner h1 {
     font-size: 22px;
   }
-  
+
   .hero-inner p {
     font-size: 14px;
   }
@@ -228,18 +236,18 @@ onMounted(async () => {
   .hero-actions {
     gap: 8px;
   }
-  
+
   .cards {
     flex-wrap: wrap;
     gap: 12px;
   }
-  
+
   .card {
     width: calc(50% - 6px);
     padding: 14px;
     font-size: 14px;
   }
-  
+
   .card h3 {
     font-size: 16px;
   }
@@ -256,47 +264,47 @@ onMounted(async () => {
     gap: 4px;
     min-width: unset;
   }
-  
+
   .hero {
     padding: 30px 0;
     margin-top: 6vh;
     margin-right: 0;
     margin-left: 0;
   }
-  
+
   .hero-inner h1 {
     font-size: 20px;
     margin-bottom: 4px;
   }
-  
+
   .hero-inner p {
     font-size: 13px;
     margin-bottom: 12px;
   }
-  
+
   .hero-actions {
     flex-direction: column;
     gap: 8px;
     padding: 0 0.75rem;
   }
-  
+
   .cards {
     flex-direction: column;
     gap: 10px;
     margin-top: 16px;
     padding: 0 0.75rem;
   }
-  
+
   .card {
     width: 100%;
     padding: 12px;
   }
-  
+
   .card h3 {
     font-size: 14px;
     margin-bottom: 4px;
   }
-  
+
   .card p {
     font-size: 12px;
   }

@@ -55,7 +55,7 @@
           <div v-if="activeTab === 'overview'" key="overview" class="tab-content">
             <header class="tab-header">
               <h2>Seu Painel</h2>
-              <p>Gerencie sua presença no AURA.</p>
+              <p>Seu AURA, seu estilo. Gerencie seu perfil navegando pelos menus.</p>
             </header>
 
             <div class="avatar-upload-section">
@@ -72,7 +72,7 @@
                   hidden 
                 />
               </div>
-              <p class="hint">Clique na foto para alterar (Max 2MB)</p>
+              <p class="hint">Clique na foto para alterar (Tamanho máximo de arquivo: 2MB)</p>
             </div>
 
             <div class="history-section">
@@ -95,8 +95,8 @@
 
             <form @submit.prevent="updateName" class="settings-form">
               <div class="form-group">
-                <label>Nome Completo</label>
-                <input v-model="profile.full_name" type="text" placeholder="Seu nome" />
+                <label>Digite aqui caso queira alterar seu nome.</label>
+                <input v-model="profile.full_name" type="text" placeholder="Digite seu novo nome" />
               </div>
               <button type="submit" class="btn-ghost" :disabled="loading">
                 {{ loading ? 'Salvando...' : 'Salvar Alterações' }}
@@ -135,6 +135,7 @@
 
             <div class="theme-section">
               <h3>Escolha sua Paleta de Cores</h3>
+              <p>Cada um tem uma identidade única. Escolha sua cor favorita.</p>
               <div class="theme-grid">
                 <button 
                   v-for="t in availableColors" 
