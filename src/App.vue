@@ -15,9 +15,13 @@ import { watchEffect, ref, onMounted } from 'vue'
 import HeaderBar from './components/HeaderBar.vue'
 import FooterBar from './components/FooterBar.vue'
 import DynamicWaves from './components/DynamicWaves.vue'
+import { useKeyboardShortcuts } from './composables'
 import './main.scss'
 
 const route = useRoute()
+
+// Ativa atalhos de teclado globalmente
+useKeyboardShortcuts()
 
 // Detecta tema do navegador na primeira visita
 const getInitialTheme = () => {

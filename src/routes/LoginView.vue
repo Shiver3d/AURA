@@ -163,7 +163,7 @@ async function submit() {
         loading.value = false;
         return;
       }
-      await signUp(email.value, password.value);
+      await signUp(email.value, password.value, name.value);
       toast.success("Conta criada. Verifique seu e-mail se necessário.");
 
       // salva perfil persistente por email
@@ -259,16 +259,7 @@ async function submit() {
   min-width: 120px;
   transition: all 0.3s ease, transform 0.2s ease;
 }
-.btn:hover:not(:disabled) {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-  background: var(--accent-solid);
-  text-shadow: var(--txt-hover);
-}
-.btn:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
+
 .link {
   text-align: center;
   background: none;

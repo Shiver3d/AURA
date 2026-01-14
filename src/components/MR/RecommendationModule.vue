@@ -1,25 +1,138 @@
-<!--
-  Arquivo: src/components/MR/RecommendationModule.vue
-  Descrição: Módulo de recomendação simples usado pela rota `AIAnalysisView`.
-  - Mantém um catálogo local de produtos, filtros reativos e uma lista de recomendações computada.
-  - `filters` controla quais produtos passam no resultado; `recommendations` ordena por `score`.
+<template>
+  <div class="recommendation-root container">
+    <header class="module-header glass">
+      <div class="header-content">
+        <h1>Olá, {{ user.name }}</h1>
+        <p>Seu regime de beleza personalizado foi atualizado com base no seu perfil.</p>
+        <p>Acaso deseje ajustar suas preferências, <span>você pode fazer isso aqui.</span></p>
+      </div>
+      <div class="header-icon">
+        <Icon icon="lucide:sparkles" width="32" />
+      </div>
+    </header>
 
-  Como modificar:
-  - Para conectar a uma API real, substitua `catalog` por fetch/axios e atualize `recommendations` conforme necessário.
-  - Para adicionar novos filtros, insira chaves em `filters` e inclua checagem em `recommendations`.
--->
+    <div class="layout-grid">
+      <aside class="filters-panel glass">
+        <div class="filters-header">
+          <Icon icon="lucide:sliders-horizontal" />
+          <h4>Preferências</h4>
+        </div>
+        
+        <div class="filter-group">
+          <label class="toggle-label">
+            <span>Sustentabilidade</span>
+            <div class="toggle-wrapper">
+              <input type="checkbox" v-model="filters.sustainable" />
+              <div class="toggle-switch"></div>
+            </div>
+          </label>
+          
+          <label class="toggle-label">
+            <span>Inclusão</span>
+            <div class="toggle-wrapper">
+              <input type="checkbox" v-model="filters.inclusive" />
+              <div class="toggle-switch"></div>
+            </div>
+          </label>
+        </div>
+
+        <div class="active-summary">
+          <small>{{ recommendations.length }} produtos encontrados</small>
+        </div>
+      </aside>
+
+      <main class="products-area">
+        <div v-if="recommendations.length > 0" class="grid">
+          <div
+            v-for="p in recommendations"
+            :key="p.id"
+            class="product-card glass"
+            @click="open(p)"
+          >
+            <div class="image-wrapper">
+              <img :src="p.image_url" :alt="p.name" />
+              <span class="score-badge">
+                <Icon icon="lucide:star" width="12" /> {{ p.score }}
+              </span>
+            </div>
+            
+            <div class="card-content">
+              <h4>{{ p.name }}</h4>
+              <div class="tags">
+                <span v-if="p.sustainable" class="tag green">
+                  <Icon icon="lucide:leaf" width="10" /> Sustentável
+                </span>
+                <span v-if="p.inclusive" class="tag purple">
+                  <Icon icon="lucide:heart-handshake" width="10" /> Inclusivo
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div v-else class="empty-state glass">
+          <Icon icon="lucide:frown" width="48" />
+          <p>Nenhum produto corresponde aos filtros selecionados.</p>
+        </div>
+      </main>
+    </div>
+
+    <Transition name="fade">
+      <div v-if="selected" class="modal-overlay" @click.self="selected = null">
+        <div class="modal glass">
+          <button class="close-btn" @click="selected = null">
+            <Icon icon="lucide:x" />
+          </button>
+
+          <div class="modal-content">
+            <img :src="selected.image_url" class="modal-img" />
+            
+            <div class="modal-info">
+              <div class="modal-header-info">
+                <h3>{{ selected.name }}</h3>
+                <div class="score-pill">Match: {{ selected.score }}/10</div>
+              </div>
+
+              <div class="badges-row">
+                <span v-if="selected.sustainable" class="tag green">Sustentável</span>
+                <span v-if="selected.inclusive" class="tag purple">Inclusivo</span>
+              </div>
+
+              <p class="description">
+                [placeholder]Este produto foi selecionado especificamente para suas necessidades.
+                Alta compatibilidade detectada.
+              </p>
+
+              <div class="modal-actions">
+                <button class="btn">
+                  <Icon icon="lucide:shopping-bag" /> Adicionar à Rotina
+                </button>
+              </div>
+
+              <section class="reviews-section">
+                <h4><Icon icon="lucide:message-circle" /> O que dizem:</h4>
+                <ul class="reviews-list">
+                  <li v-for="r in selected.reviews" :key="r.id" class="review-item">
+                    <strong>{{ r.author }}</strong>
+                    <p>{{ r.text }}</p>
+                  </li>
+                </ul>
+              </section>
+            </div>
+          </div>
+        </div>
+      </div>
+    </Transition>
+  </div>
+</template>
 
 <script setup>
 import { ref, computed, onMounted } from "vue";
+import { Icon } from "@iconify/vue"; // Certifique-se de ter instalado: npm install @iconify/vue
 
 const user = ref({ name: "Visitante" });
-onMounted(() => {
-  const u = JSON.parse(localStorage.getItem("skin_user") || "null");
-  if (u) user.value = u;
-});
 
-const filters = ref({ sustainable: true, inclusive: true });
-
+// Simulação de dados com imagens placeholders para visual
 const catalog = ref([
   {
     id: 1,
@@ -27,7 +140,8 @@ const catalog = ref([
     sustainable: true,
     inclusive: true,
     score: 9.2,
-    reviews: [{ id: 1, author: "Ana", text: "Mudou minha pele!" }],
+    image_url: "https://placehold.co/400x400/e6f7ff/00b3ff?text=Effaclar",
+    reviews: [{ id: 1, author: "Ana", text: "Mudou minha pele completamente!" }],
   },
   {
     id: 2,
@@ -35,7 +149,8 @@ const catalog = ref([
     sustainable: false,
     inclusive: true,
     score: 8.1,
-    reviews: [{ id: 2, author: "Carlos", text: "Ótima hidratação." }],
+    image_url: "https://placehold.co/400x400/f0f8ff/1a7fe0?text=Vichy+89",
+    reviews: [{ id: 2, author: "Carlos", text: "Hidratação leve e refrescante." }],
   },
   {
     id: 3,
@@ -43,9 +158,27 @@ const catalog = ref([
     sustainable: true,
     inclusive: false,
     score: 7.9,
-    reviews: [{ id: 3, author: "Mariana", text: "Leve e eficaz." }],
+    image_url: "https://placehold.co/400x400/e8ffef/27ae60?text=Bio+Serum",
+    reviews: [{ id: 3, author: "Mariana", text: "Bom, mas a textura é densa." }],
+  },
+  {
+    id: 4,
+    name: "CeraVe Lotion",
+    sustainable: false,
+    inclusive: true,
+    score: 8.5,
+    image_url: "https://placehold.co/400x400/ffffff/333333?text=CeraVe",
+    reviews: [{ id: 4, author: "Pedro", text: "Básico que funciona." }],
   },
 ]);
+
+const filters = ref({ sustainable: true, inclusive: true });
+const selected = ref(null);
+
+onMounted(() => {
+  const u = JSON.parse(localStorage.getItem("skin_user") || "null");
+  if (u) user.value = u;
+});
 
 const recommendations = computed(() => {
   return catalog.value
@@ -54,217 +187,449 @@ const recommendations = computed(() => {
     .sort((a, b) => b.score - a.score);
 });
 
-const selected = ref(null);
 function open(p) {
   selected.value = p;
 }
-function toggleFilter(k) {
-  filters.value[k] = !filters.value[k];
-}
 </script>
 
-<template>
-  <section class="mr-i container">
-    <header class="mr-i-status-panel glass">
-      <h2>Olá {{ user.name }}, bom lhe ver novamente.</h2>
-      <h3>Seu Regime de Beleza Personalizado Está Pronto!</h3>
-    </header>
-
-    <aside class="mr-i-filters glass">
-      <h4>Filtros</h4>
-      <div class="filter-list">
-        <label
-          ><input type="checkbox" v-model="filters.sustainable" />
-          Sustentabilidade</label
-        >
-        <label
-          ><input type="checkbox" v-model="filters.inclusive" /> Inclusão</label
-        >
-      </div>
-    </aside>
-
-    <div class="mr-i-product-list">
-      <h2>Produtos Recomendados</h2>
-      <div class="product-grid">
-        <div
-          v-for="p in recommendations"
-          :key="p.id"
-          class="prod card glass"
-          @click="open(p)"
-        >
-          <h4>{{ p.name }}</h4>
-          <div class="meta">Score: {{ p.score }}</div>
-          <div class="badges">
-            <span v-if="p.sustainable" class="badge green">Sustentável</span>
-            <span v-if="p.inclusive" class="badge">Inclusivo</span>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div v-if="selected" class="modal-overlay" @click.self="selected = null">
-      <div class="modal glass">
-        <button class="close" @click="selected = null">Fechar</button>
-        <h3>{{ selected.name }}</h3>
-        <p>Score: {{ selected.score }}</p>
-        <section class="reviews">
-          <h4>Avaliações</h4>
-          <ul>
-            <li v-for="r in selected.reviews" :key="r.id">
-              {{ r.author }} — {{ r.text }}
-            </li>
-          </ul>
-        </section>
-      </div>
-    </div>
-  </section>
-</template>
-
-<style scoped>
-.mr-i {
-  padding: 18px;
-  margin-top: 6vh;
+<style scoped lang="scss">
+.recommendation-root {
+  margin-top: 10vh;
+  min-height: 85vh;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
-.mr-i-status-panel {
-  padding: 14px;
-  margin-bottom: 12px;
-  text-align: center;
+
+/* Header Section */
+.module-header {
+  padding: 24px 32px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  
+  h1 {
+    margin: 0;
+    font-size: 1.8rem;
+    font-weight: 700;
+    text-shadow: var(--txt-hover);
+  }
+  
+  p {
+    margin: 16px 0 0;
+    color: var(--muted);
+  }
+
+  span {
+    text-decoration: underline;
+    cursor: pointer;
+    color: var(--color-sky-dark);
+  }
+
+  span:hover {
+    color: var(--color-sky);
+  }
+
+  .header-icon {
+    color: var(--color-sky);
+    background: rgba(255, 255, 255, 0.274);
+    padding: 12px;
+    border-radius: 50%;
+    backdrop-filter: blur(4px);
+  }
 }
-.mr-i-filters {
-  padding: 12px;
-  display: inline-block;
-  margin-bottom: 14px;
-}
-.product-grid {
+
+/* Layout Grid (Sidebar + Main) */
+.layout-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 12px;
+  grid-template-columns: 280px 1fr;
+  gap: 24px;
+  align-items: start;
 }
-.prod {
+
+/* Sidebar Styling */
+.filters-panel {
+  padding: 20px;
+  position: sticky;
+  top: 110px; /* Sticky effect on scroll */
+}
+
+.filters-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--glass-border);
+  
+  h4 {
+    margin: 0;
+    font-size: 1.1rem;
+    color: var(--text);
+  }
+}
+
+.filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Toggle Switch Styling */
+.toggle-label {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  font-size: 0.95rem;
+  color: var(--muted);
+  transition: color 0.3s;
+
+  &:hover {
+    color: var(--text);
+  }
+}
+
+.toggle-wrapper {
+  position: relative;
+  width: 44px;
+  height: 24px;
+
+  input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+  
+  .toggle-switch {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0,0,0,0.1);
+    border-radius: 34px;
+    transition: .4s;
+    border: 1px solid var(--glass-border);
+  }
+  
+  .toggle-switch:before {
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    left: 2px;
+    bottom: 2px;
+    background-color: white;
+    border-radius: 50%;
+    transition: .4s;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  }
+
+  input:checked + .toggle-switch {
+    background: var(--accent-solid);
+  }
+  
+  input:checked + .toggle-switch:before {
+    transform: translateX(20px);
+  }
+}
+
+.active-summary {
+  margin-top: 24px;
+  padding-top: 16px;
+  border-top: 1px solid var(--glass-border);
+  text-align: center;
+  color: var(--muted);
+}
+
+/* Product Grid */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 20px;
+}
+
+.product-card {
   padding: 12px;
   cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+
+  &:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 12px 30px rgba(0, 229, 255, 0.15);
+    border-color: var(--color-sky);
+  }
 }
-.badge {
-  padding: 6px 8px;
-  border-radius: 8px;
-  background: rgba(255, 255, 255, 0.06);
-  font-size: 12px;
+
+.image-wrapper {
+  position: relative;
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 12px;
+  
+  img {
+    width: 100%;
+    height: 160px;
+    object-fit: cover;
+    background: #fff;
+    transition: transform 0.5s ease;
+  }
+
+  .score-badge {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: rgba(0, 0, 0, 0.6);
+    color: #ffd700;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    backdrop-filter: blur(4px);
+  }
 }
-.badge.green {
-  background: linear-gradient(90deg, #e6fff7, #d0fff0);
+
+.product-card:hover img {
+  transform: scale(1.05);
 }
+
+.card-content {
+  h4 {
+    margin: 0 0 8px;
+    font-size: 1rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.tag {
+  font-size: 0.7rem;
+  padding: 4px 8px;
+  border-radius: 6px;
+  background: rgba(255,255,255,0.1);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  
+  &.green {
+    background: var(--color-green);
+    color: #0d5f35;
+    border: 1px solid rgba(13, 95, 53, 0.1);
+  }
+  
+  &.purple {
+    background: rgba(187, 134, 252, 0.2);
+    color: #8a2bff;
+    border: 1px solid rgba(138, 43, 255, 0.1);
+  }
+}
+
+.empty-state {
+  text-align: center;
+  padding: 40px;
+  color: var(--muted);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+/* Modal Styling (Igual ao SearchView) */
 .modal-overlay {
   position: fixed;
   inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(8px);
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(0, 0, 0, 0.45);
-  z-index: 80;
+  z-index: 100;
 }
+
 .modal {
-  width: 720px;
-  max-width: 94%;
-  padding: 18px;
+  width: 750px;
+  max-width: 90%;
+  max-height: 90vh;
+  overflow-y: auto;
+  padding: 32px;
+  position: relative;
+  animation: modalIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
-.close {
+
+.close-btn {
   position: absolute;
-  right: 12px;
-  top: 12px;
+  right: 20px;
+  top: 20px;
+  background: none;
+  border: none;
+  color: var(--text);
+  font-size: 24px;
+  cursor: pointer;
+  opacity: 0.7;
+  transition: 0.2s;
+  
+  &:hover { opacity: 1; transform: scale(1.1); }
 }
 
-/* Responsive Design for Tablet (768px) */
-@media (max-width: 768px) {
-  .mr-i {
-    padding: 1.2rem;
-    margin-top: 4vh;
-  }
-  .mr-i-status-panel {
-    padding: 1rem;
-    margin-bottom: 1rem;
-  }
-  .mr-i-status-panel h2 {
-    font-size: 1.2rem;
-  }
-  .mr-i-status-panel h3 {
-    font-size: 1rem;
-  }
-  .mr-i-filters {
-    padding: 0.75rem;
-    display: block;
-    width: 100%;
-    margin-bottom: 1rem;
-  }
-  .product-grid {
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-    gap: 10px;
-  }
-  .prod {
-    padding: 10px;
-  }
-  .modal {
-    width: 85%;
-    padding: 1.5rem;
-  }
+.modal-content {
+  display: flex;
+  gap: 32px;
 }
 
-/* Responsive Design for Mobile (480px) */
-@media (max-width: 480px) {
-  .mr-i {
-    padding: 0.75rem;
-    margin-top: 2.5vh;
-  }
-  .mr-i-status-panel {
-    padding: 0.75rem;
-    margin-bottom: 0.75rem;
-  }
-  .mr-i-status-panel h2 {
+.modal-img {
+  width: 280px;
+  height: 280px;
+  object-fit: contain;
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+}
+
+.modal-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-header-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 12px;
+  
+  h3 { margin: 0; font-size: 1.6rem; }
+}
+
+.score-pill {
+  background: var(--accent);
+  color: white;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: bold;
+}
+
+.badges-row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.description {
+  line-height: 1.6;
+  color: var(--text);
+  margin-bottom: 24px;
+}
+
+.reviews-section {
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid var(--glass-border);
+  
+  h4 {
     font-size: 1rem;
-  }
-  .mr-i-status-panel h3 {
-    font-size: 0.9rem;
-  }
-  .mr-i-filters {
-    padding: 0.5rem;
-    display: block;
-    width: 100%;
-    margin-bottom: 0.75rem;
-  }
-  .filter-list label {
+    margin-bottom: 12px;
     display: flex;
-    gap: 0.5rem;
-    font-size: 0.85rem;
-    margin: 0.5rem 0;
-  }
-  .product-grid {
-    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    align-items: center;
     gap: 8px;
   }
-  .prod {
-    padding: 8px;
+}
+
+.review-item {
+  background: rgba(255,255,255,0.05);
+  padding: 10px;
+  border-radius: 8px;
+  margin-bottom: 8px;
+  font-size: 0.9rem;
+  
+  strong { display: block; margin-bottom: 4px; color: var(--color-sky); }
+  p { margin: 0; color: var(--muted); font-size: 0.85rem; }
+}
+
+@keyframes modalIn {
+  from { opacity: 0; transform: scale(0.95) translateY(20px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+/* Animations */
+.fade-enter-active, .fade-leave-active { transition: opacity 0.3s; }
+.fade-enter-from, .fade-leave-to { opacity: 0; }
+
+/* Responsive */
+@media (max-width: 900px) {
+  .layout-grid {
+    grid-template-columns: 240px 1fr;
   }
-  .prod h4 {
-    font-size: 0.9rem;
+}
+
+@media (max-width: 768px) {
+  .recommendation-root {
+    margin-top: 8vh;
+    padding: 16px;
   }
-  .meta {
-    font-size: 0.8rem;
+
+  .module-header {
+    flex-direction: column;
+    text-align: center;
+    gap: 16px;
+    
+    .header-icon { display: none; }
   }
-  .badge {
-    padding: 4px 6px;
-    font-size: 10px;
+
+  .layout-grid {
+    grid-template-columns: 1fr; /* Stack layout */
+    gap: 16px;
   }
-  .modal {
-    width: 90%;
-    padding: 1rem;
+
+  .filters-panel {
+    position: static;
+    width: 100%;
+    margin-bottom: 8px;
   }
-  .modal h3 {
-    font-size: 1.1rem;
+
+  .filter-group {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-around;
   }
-  .close {
-    right: 10px;
-    top: 10px;
-    padding: 6px 8px;
-    font-size: 0.9rem;
+
+  .modal-content {
+    flex-direction: column;
+  }
+  
+  .modal-img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+  }
+}
+
+@media (max-width: 480px) {
+  .grid {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 12px;
+  }
+  
+  .product-card { padding: 8px; }
+  .image-wrapper { height: 120px; }
+  
+  .filter-group {
+    flex-direction: column;
+    align-items: stretch;
   }
 }
 </style>

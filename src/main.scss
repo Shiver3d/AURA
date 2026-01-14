@@ -11,7 +11,7 @@
 
   /* Default theme: BLUE (Light) */
   --bg: #f8fbff;
-  --panel-bg: rgba(255,255,255,0.6);
+  --panel-bg: rgb(25, 0, 255);
   --text: #333333;
   --muted: #6b7280;
   --accent: linear-gradient(180deg,#2ea3ff,#1a7fe0);
@@ -59,7 +59,8 @@
 
   --glass-bg: linear-gradient(135deg, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0.1) 100%);
   --btn-bg: linear-gradient(135deg,#00000000,#2ea4ff70);
-  --glass-border-top: rgba(255,255,255,0.6);
+  --btn-bg-ghost: linear-gradient(180deg, rgba(212, 225, 252, 0.205), rgba(246, 250, 255, 0.384));
+  --glass-border-top: rgba(255, 255, 255, 0.24);
   --txt-hover: #a3d7ff70 0 0 8px;
 
   --wave-1: rgba(46,163,255,0.08);
@@ -67,7 +68,7 @@
   --wave-3: rgba(64,196,255,0.04);
   
   /* Gradient wave - Light Blue theme */
-  --wave-gradient-1: rgba(138,100,255,0.12);
+  --wave-gradient-1: rgba(138,100,255,0.255);
   --wave-gradient-2: rgba(100,200,255,0.12);
 }
 
@@ -88,6 +89,7 @@
   --glow-purple: #8a2bff;
   --glass-bg: linear-gradient(135deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.02) 100%);
   --btn-bg: linear-gradient(135deg,#00000000,#00b3ff79);
+  --btn-bg-ghost: linear-gradient(180deg, rgba(255,255,255,0.12), rgba(0,0,0,0.06));
   --glass-border-top: rgba(255,255,255,0.12);
   --txt-hover: #ffffffda 0 0 8px;
 
@@ -96,7 +98,7 @@
   --wave-3: rgba(2,94,153,0.04);
   
   /* Gradient wave - Dark Blue theme */
-  --wave-gradient-1: rgba(138,43,255,0.15);
+  --wave-gradient-1: rgba(138,43,255,0.255);
   --wave-gradient-2: rgba(0,243,255,0.12);
 }
 
@@ -106,7 +108,7 @@
 [data-color="red"] {
   --bg: #fff5f5;
   --panel-bg: rgba(255,240,240,0.65);
-  --text: #2d0a0a;
+  --text: #363030;
   --muted: #8b5555;
   --accent: linear-gradient(180deg,#ff5566,#d63031);
   --accent-solid: #ff556640;
@@ -123,13 +125,13 @@
   --wave-3: rgba(255,150,170,0.05);
   
   /* Gradient wave - Red theme */
-  --wave-gradient-1: rgba(198, 200, 80, 0.12);
+  --wave-gradient-1: rgba(198, 200, 80, 0.255);
   --wave-gradient-2: rgba(255,150,170,0.12);
 }
 [data-color="red"][data-theme="dark"] {
   --bg: #1a0505;
   --panel-bg: rgba(50,15,15,0.5);
-  --text: #ffdddd;
+  --text: #fff1f1;
   --muted: #e8b8b8;
   --accent: linear-gradient(180deg,#ff7a8b,#ff5566);
   --accent-solid: #ff556679;
@@ -144,7 +146,7 @@
   --wave-3: rgba(255,170,190,0.05);
   
   /* Gradient wave - Dark Red theme */
-  --wave-gradient-1: rgba(220, 206, 80, 0.15);
+  --wave-gradient-1: rgba(220, 206, 80, 0.255);
   --wave-gradient-2: rgba(255,122,139,0.12);
 }
 
@@ -155,8 +157,8 @@
 [data-color="green"] {
   --bg: #f5fffb;
   --panel-bg: rgba(240,255,248,0.65);
-  --text: #0d2615;
-  --muted: #5a8a6a;
+  --text: #177033;
+  --muted: #5d9c72;
   --accent: linear-gradient(180deg,#30c25d,#1e9a45);
   --accent-solid: #30c25d50;
   --glass-border: rgba(48,194,93,0.2);
@@ -172,14 +174,14 @@
   --wave-3: rgba(125,255,170,0.05);
   
   /* Gradient wave - Green theme */
-  --wave-gradient-1: rgba(180, 59, 160, 0.12);
+  --wave-gradient-1: rgba(206, 45, 179, 0.255);
   --wave-gradient-2: rgba(125,255,170,0.12);
 }
 [data-color="green"][data-theme="dark"] {
   --bg: #051a0a;
   --panel-bg: rgba(15,50,25,0.5);
-  --text: #ddffdd;
-  --muted: #b8e8c8;
+  --text: #f1fff1;
+  --muted: #cce9d6;
   --accent: linear-gradient(180deg,#52d685,#2ecc71);
   --accent-solid: #52d68579;
   --glass-border: rgba(82,214,133,0.15);
@@ -187,13 +189,13 @@
   --glass-bg: linear-gradient(135deg, rgba(82,214,133,0.08) 0%, rgba(46,204,113,0.03) 100%);
   --btn-bg: linear-gradient(135deg,#00000000,#52d68579);
   --glass-border-top: rgba(120,220,150,0.15);
-  --txt-hover: #ccffddda 0 0 12px;
+  --txt-hover: #dcfae6da 0 0 12px;
   --wave-1: rgba(82,214,133,0.08);
   --wave-2: rgba(46,204,113,0.06);
   --wave-3: rgba(125,255,170,0.05);
   
   /* Gradient wave - Dark Green theme */
-  --wave-gradient-1: rgba(190, 72, 175, 0.15);
+  --wave-gradient-1: rgba(190, 72, 175, 0.255);
   --wave-gradient-2: rgba(82,214,133,0.12);
 }
 
@@ -203,8 +205,8 @@
 [data-color="purple"] {
   --bg: #faf5ff;
   --panel-bg: rgba(250,240,255,0.65);
-  --text: #2d0a4d;
-  --muted: #8b5aa3;
+  --text: #7000da;
+  --muted: #812eaa;
   --accent: linear-gradient(180deg,#b366ff,#8e44ad);
   --accent-solid: #b366ff50;
   --glass-border: rgba(179,102,255,0.2);
@@ -220,14 +222,14 @@
   --wave-3: rgba(216,165,255,0.05);
   
   /* Gradient wave - Purple theme */
-  --wave-gradient-1: rgba(102, 219, 255, 0.12);
+  --wave-gradient-1: rgba(102, 219, 255, 0.255);
   --wave-gradient-2: rgba(216,165,255,0.12);
 }
 [data-color="purple"][data-theme="dark"] {
   --bg: #15050a;
   --panel-bg: rgba(45,15,60,0.5);
-  --text: #e6ccff;
-  --muted: #d6a9e3;
+  --text: #f8f0ff;
+  --muted: #dbc2e2;
   --accent: linear-gradient(180deg,#d695ff,#bb86fc);
   --accent-solid: #d695ff79;
   --glass-border: rgba(214,149,255,0.15);
@@ -268,7 +270,7 @@
   --wave-3: rgba(150,150,150,0.05);
   
   /* Gradient wave - B&W theme */
-  --wave-gradient-1: rgba(80,80,80,0.12);
+  --wave-gradient-1: rgba(80,80,80,0.255);
   --wave-gradient-2: rgba(150,150,150,0.12);
 }
 [data-color="bw"][data-theme="dark"] {
@@ -389,21 +391,23 @@ h1, h2, h3, h4, h5, h6, p, span, div, a, input, textarea, select, button {
   color: var(--text);
   cursor: pointer;
   transition: transform 160ms ease, box-shadow 160ms ease, background 0.4s ease;
-  box-shadow: 0 6px 18px rgba(25,118,210,0.18);
+  box-shadow: var(--glass-shadow);
 }
 .btn:hover { 
   transform: translateY(-1px); 
-  box-shadow: 0 10px 28px rgba(25, 118, 210, 0.267); 
+  box-shadow: var(--accent); 
   background-color: var(--accent-solid);
   text-shadow: var(--txt-hover);
 }
 .btn-ghost { 
   text-shadow: #ffffffda 0 0 8px;
-  background: transparent; 
   color: var(--text); 
-  box-shadow: none; 
-  border: 1px solid rgba(255, 255, 255, 0.123); 
+  border: none;
   transition: color 0.4s ease, border-color 0.4s ease, transform 160ms ease;
+
+  &:hover {
+    transition: all 0.3s ease;
+  }
 }
 
 .glass-button {
@@ -484,4 +488,12 @@ h1, h2, h3, h4, h5, h6, p, span, div, a, input, textarea, select, button {
 .route-zoom-enter-to { 
   opacity: 1; 
   transform: scale(1); 
+}
+.route-zoom-leave-from {
+  opacity: 1;
+  transform: scale(1);
+}
+.route-zoom-leave-to {
+  opacity: 0;
+  transform: scale(.96);
 }

@@ -64,44 +64,99 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onBeforeUnmount } from "vue";
+import { ref, computed, onMounted, onBeforeUnmount, watch } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import { Icon } from "@iconify/vue";
+import { supabase } from "../services/supabase";
+import { useAuth } from "../composables";
 
 const q = ref("");
 const router = useRouter();
 const route = useRoute();
+const { user } = useAuth();
 
 const userName = ref("Visitante");
 const theme = ref("dark");
 const userAvatar = ref(null);
 
-function loadUserData() {
+// Carregar avatar do Supabase
+async function loadAvatarFromDatabase() {
+  if (!user.value) return;
+  
+  try {
+    const { data: profileData } = await supabase
+      .from("profiles")
+      .select("avatar_url")
+      .eq("id", user.value.id)
+      .single();
+
+    if (profileData && profileData.avatar_url) {
+      userAvatar.value = profileData.avatar_url;
+    } else {
+      userAvatar.value = null;
+    }
+  } catch (err) {
+    console.log("Erro ao carregar avatar:", err.message);
+    userAvatar.value = null;
+  }
+}
+
+// Carregar dados do localStorage (fallback)
+function loadUserDataFromStorage() {
   const u = JSON.parse(localStorage.getItem("skin_user") || "null");
-  if (u) {
-    if (u.name) userName.value = u.name;
-    if (u.avatar) userAvatar.value = u.avatar;
-    else userAvatar.value = null;
+  if (u && u.name) {
+    userName.value = u.name;
   }
 }
 
 function handleUserUpdate() {
-  loadUserData();
+  // Quando UserView atualiza o avatar, recarrega aqui
+  loadAvatarFromDatabase();
+  loadUserDataFromStorage();
 }
 
+// Watch para recarregar quando usuário muda
+watch(user, () => {
+  if (user.value) {
+    loadUserDataFromStorage();
+    loadAvatarFromDatabase();
+  }
+});
+
 onMounted(() => {
-  loadUserData();
+  loadUserDataFromStorage();
+  
   // Sincroniza com o sistema de tema do App.vue
   const t = localStorage.getItem("theme") || "dark";
   theme.value = t;
-  // Garante que o tema está aplicado (App.vue também faz isso, mas garantimos aqui)
   document.documentElement.setAttribute("data-theme", t);
+  
+  // Carrega avatar do banco
+  if (user.value) {
+    loadAvatarFromDatabase();
+  }
+  
   // Escuta atualizações do usuário
   window.addEventListener("user-updated", handleUserUpdate);
+  window.addEventListener("avatar-updated", handleUserUpdate);
+  
+  // Recarrega avatar a cada 5 segundos para sincronizar mudanças
+  const avatarRefreshInterval = setInterval(() => {
+    if (user.value) {
+      loadAvatarFromDatabase();
+    }
+  }, 5000);
+  
+  // Cleanup
+  onBeforeUnmount(() => {
+    window.removeEventListener("user-updated", handleUserUpdate);
+    window.removeEventListener("avatar-updated", handleUserUpdate);
+    clearInterval(avatarRefreshInterval);
+  });
 });
 
 onBeforeUnmount(() => {
-  window.removeEventListener("user-updated", handleUserUpdate);
+  // Será sobrescrito pelo cleanup dentro de onMounted
 });
 
 function onToggleTheme() {
@@ -208,8 +263,8 @@ function goBack() {
   transform: scale(1.1);
 }
 .profile-btn {
-  width: 50px;
-  height: 50px;
+  width: 60px;
+  height: 60px;
   border-radius: 50%;
   overflow: hidden;
 }
