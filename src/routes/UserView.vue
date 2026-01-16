@@ -509,8 +509,25 @@ const updatePassword = async () => {
 };
 
 async function handleLogout() {
-  await signOut();
-  router.push("/login");
+  try {
+    // Fazer logout no Supabase
+    await signOut();
+    
+    // Remover credenciais salvas do localStorage (limpar "lembrar de mim")
+    localStorage.removeItem('skin_saved_credentials');
+    
+    // Limpar dados de perfil
+    localStorage.removeItem('skin_user');
+    
+    // Redirecionar para login
+    router.push("/login");
+  } catch (err) {
+    console.error('Erro ao fazer logout:', err);
+    // Mesmo com erro, limpa localStorage e redireciona
+    localStorage.removeItem('skin_saved_credentials');
+    localStorage.removeItem('skin_user');
+    router.push("/login");
+  }
 }
 
 function openLogoutModal() { showLogoutModal.value = true; }

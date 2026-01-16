@@ -19,7 +19,7 @@ api.interceptors.request.use(
         config.headers.Authorization = `Bearer ${session.access_token}`
       }
     } catch (error) {
-      console.error('Error getting auth session:', error)
+      console.error('Erro ao obter sessão de autenticação:', error)
     }
     return config
   },
@@ -32,7 +32,7 @@ api.interceptors.response.use(
   (error) => {
     if (error.response?.status === 401) {
       // Token expirado ou não autenticado
-      console.warn('Unauthorized - redirecting to login')
+      console.warn('Não autorizado - redirecionando para login')
     }
     return Promise.reject(error)
   }

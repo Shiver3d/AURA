@@ -83,7 +83,7 @@ export function useAuth() {
     }
   }
 
-  // Novo: Método para atualizar e-mail ou senha
+  // Método para atualizar e-mail ou senha
   const updateCredentials = async (newEmail, newPassword) => {
     loading.value = true
     error.value = null

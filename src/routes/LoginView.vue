@@ -19,7 +19,11 @@
       <form @submit.prevent="submit">
         <label class="field" v-if="isSignup">
           <span>Nome</span>
-          <input v-model="name" placeholder="Seu nome, como será visto e chamado." />
+          <input 
+            v-model="name" 
+            placeholder="Seu nome, como será visto e chamado."
+            @input="sanitizeName" 
+          />
         </label>
         <label class="field">
           <span>Email</span>
@@ -39,6 +43,15 @@
             placeholder="Sua senha, sua confidência."
           />
         </label>
+        
+        <label class="remember-label" v-if="!isSignup">
+          <div class="toggle-wrapper">
+            <input type="checkbox" v-model="rememberMe" />
+            <div class="toggle-switch"></div>
+          </div>
+          <span>Lembrar de mim neste dispositivo</span>
+        </label>
+
         <div class="actions">
           <button class="btn" type="submit" :disabled="loading">
             {{ isSignup ? "Criar conta" : "Entrar" }}
@@ -102,6 +115,7 @@ const email = ref("");
 const password = ref("");
 const isSignup = ref(false);
 const loading = ref(false);
+const rememberMe = ref(false);
 
 const showPopup = ref(false);
 const popupMessage = ref("");
@@ -111,6 +125,16 @@ const recoveryEmail = ref("");
 
 const router = useRouter();
 const { signIn, signUp, getCurrentUser } = useAuth();
+
+// Carregar credenciais salvas ao montar o componente
+if (typeof window !== 'undefined') {
+  const savedCreds = JSON.parse(localStorage.getItem('skin_saved_credentials') || 'null');
+  if (savedCreds) {
+    email.value = savedCreds.email;
+    password.value = savedCreds.password;
+    rememberMe.value = true;
+  }
+}
 
 function toggleMode() {
   isSignup.value = !isSignup.value;
@@ -127,6 +151,11 @@ function closeRecovery() {
 
 function closePopup() {
   showPopup.value = false;
+}
+
+function sanitizeName() {
+  // Remove números e caracteres especiais, mantém apenas letras, espaços e acentos
+  name.value = name.value.replace(/[0-9!@#$%^&*(),.?":{}|<>/\\]/g, '');
 }
 
 function validatePassword(pw) {
@@ -178,6 +207,17 @@ async function submit() {
     } else {
       await signIn(email.value, password.value);
       toast.success("Login efetuado com sucesso!");
+
+      // Salvar credenciais se "lembrar de mim" estiver ativado
+      if (rememberMe.value) {
+        localStorage.setItem('skin_saved_credentials', JSON.stringify({
+          email: email.value,
+          password: password.value
+        }));
+      } else {
+        // Remover credenciais salvas se desmarcado
+        localStorage.removeItem('skin_saved_credentials');
+      }
 
       // carrega perfil persistente por email (se existir)
       const profilesRaw = localStorage.getItem("skin_profiles") || "{}";
@@ -248,6 +288,70 @@ async function submit() {
   border-color: var(--accent-solid);
   box-shadow: 0 0 12px var(--accent-solid);
 }
+
+/* Remember Me Checkbox */
+.remember-label {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 12px;
+  margin: 12px 0 16px;
+  cursor: pointer;
+  font-size: 0.95rem;
+  color: var(--muted);
+  transition: color 0.3s;
+}
+
+.remember-label:hover {
+  color: var(--text);
+}
+
+.toggle-wrapper {
+  position: relative;
+  width: 44px;
+  height: 24px;
+
+  input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+  
+  .toggle-switch {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0,0,0,0.1);
+    border-radius: 34px;
+    transition: .4s;
+    border: 1px solid var(--glass-border);
+  }
+  
+  .toggle-switch:before {
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    left: 2px;
+    bottom: 2px;
+    background-color: white;
+    border-radius: 50%;
+    transition: .4s;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  }
+
+  input:checked + .toggle-switch {
+    background: var(--accent-solid);
+  }
+  
+  input:checked + .toggle-switch:before {
+    transform: translateX(20px);
+  }
+}
+
 .actions {
   display: flex;
   justify-content: flex-end;

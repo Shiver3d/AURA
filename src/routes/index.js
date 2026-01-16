@@ -31,20 +31,22 @@ const routes = [
 
 const router = createRouter({ history: createWebHistory(), routes })
 
-// Global guard: protect routes from being accessed without authentication
+// Guard global: protege rotas contra acesso não autenticado
 router.beforeEach(async (to, from, next) => {
-  // allow access to login route always
+  // Permite acesso à rota de login sempre
   if (to.path === '/login') return next()
 
   try {
     const { data } = await supabase.auth.getUser()
     const user = data?.user
     if (!user) {
+      // Redireciona para login se não estiver autenticado
       return next({ path: '/login' })
     }
     return next()
   } catch (err) {
-    // fallback: redirect to login
+    // Fallback: redireciona para login em caso de erro
+    console.error('Erro ao verificar autenticação:', err)
     return next({ path: '/login' })
   }
 })
