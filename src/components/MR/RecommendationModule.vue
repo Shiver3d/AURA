@@ -2,7 +2,7 @@
   <div class="recommendation-root container">
     <header class="module-header glass">
       <div class="header-content">
-        <h1>Olá, {{ user.name }}</h1>
+        <h1>Olá, {{ firstName }}</h1>
         <p>Seu regime de beleza personalizado foi atualizado com base no seu perfil.</p>
         <p>Acaso deseje ajustar suas preferências, <span>você pode fazer isso aqui.</span></p>
       </div>
@@ -43,31 +43,12 @@
 
       <main class="products-area">
         <div v-if="recommendations.length > 0" class="grid">
-          <div
+          <ProductCard
             v-for="p in recommendations"
             :key="p.id"
-            class="product-card glass"
-            @click="open(p)"
-          >
-            <div class="image-wrapper">
-              <img :src="p.image_url" :alt="p.name" />
-              <span class="score-badge">
-                <Icon icon="lucide:star" width="12" /> {{ p.score }}
-              </span>
-            </div>
-            
-            <div class="card-content">
-              <h4>{{ p.name }}</h4>
-              <div class="tags">
-                <span v-if="p.sustainable" class="tag green">
-                  <Icon icon="lucide:leaf" width="10" /> Sustentável
-                </span>
-                <span v-if="p.inclusive" class="tag purple">
-                  <Icon icon="lucide:heart-handshake" width="10" /> Inclusivo
-                </span>
-              </div>
-            </div>
-          </div>
+            :product="p"
+            @select="open"
+          />
         </div>
 
         <div v-else class="empty-state glass">
@@ -94,8 +75,12 @@
               </div>
 
               <div class="badges-row">
-                <span v-if="selected.sustainable" class="tag green">Sustentável</span>
-                <span v-if="selected.inclusive" class="tag purple">Inclusivo</span>
+                <span v-if="selected.sustainable" class="tag green">
+                  <Icon icon="lucide:leaf" width="12" /> Sustentável
+                </span>
+                <span v-if="selected.inclusive" class="tag purple">
+                  <Icon icon="lucide:heart-handshake" width="12" /> Inclusivo
+                </span>
               </div>
 
               <p class="description">
@@ -128,56 +113,125 @@
 
 <script setup>
 import { ref, computed, onMounted } from "vue";
-import { Icon } from "@iconify/vue"; // Certifique-se de ter instalado: npm install @iconify/vue
+import { Icon } from "@iconify/vue";
+import ProductCard from "./ProductCard.vue";
+import { useAuth } from "../../composables";
+import { supabase } from "../../services/supabase";
 
-const user = ref({ name: "Visitante" });
+const { user } = useAuth();
+
+const profile = ref({
+  full_name: "",
+});
+
+// Computed para manter o firstName sincronizado com o database
+const firstName = computed(() => {
+  const fullName = profile.value.full_name || 
+                   user.value?.user_metadata?.full_name || 
+                   "Visitante";
+  return fullName.split(" ")[0];
+});
 
 // Simulação de dados com imagens placeholders para visual
 const catalog = ref([
   {
     id: 1,
     name: "La Roche-Posay Effaclar",
+    description: "Solução eficaz para pele oleosa e acneica",
+    category: "skincare",
     sustainable: true,
     inclusive: true,
     score: 9.2,
+    price: 89.90,
+    rating: 4.8,
+    reviews_count: 156,
     image_url: "https://placehold.co/400x400/e6f7ff/00b3ff?text=Effaclar",
     reviews: [{ id: 1, author: "Ana", text: "Mudou minha pele completamente!" }],
   },
   {
     id: 2,
     name: "Vichy Mineral 89",
+    description: "Hidratante mineral com 89% de água termal",
+    category: "skincare",
     sustainable: false,
     inclusive: true,
     score: 8.1,
+    price: 64.90,
+    rating: 4.5,
+    reviews_count: 203,
     image_url: "https://placehold.co/400x400/f0f8ff/1a7fe0?text=Vichy+89",
     reviews: [{ id: 2, author: "Carlos", text: "Hidratação leve e refrescante." }],
   },
   {
     id: 3,
     name: "Clean&Green Serum",
+    description: "Sérum 100% natural e sustentável",
+    category: "skincare",
     sustainable: true,
     inclusive: false,
     score: 7.9,
+    price: 79.90,
+    rating: 4.6,
+    reviews_count: 128,
     image_url: "https://placehold.co/400x400/e8ffef/27ae60?text=Bio+Serum",
     reviews: [{ id: 3, author: "Mariana", text: "Bom, mas a textura é densa." }],
   },
   {
     id: 4,
     name: "CeraVe Lotion",
+    description: "Loção hidratante com ceramidas",
+    category: "skincare",
     sustainable: false,
     inclusive: true,
     score: 8.5,
+    price: 59.90,
+    rating: 4.7,
+    reviews_count: 340,
     image_url: "https://placehold.co/400x400/ffffff/333333?text=CeraVe",
     reviews: [{ id: 4, author: "Pedro", text: "Básico que funciona." }],
+  },
+  {
+    id: 5,
+    name: "Nyx Born to Glow",
+    description: "Base líquida com acabamento radiante",
+    category: "makeup",
+    sustainable: false,
+    inclusive: true,
+    score: 8.3,
+    price: 59.90,
+    rating: 4.6,
+    reviews_count: 289,
+    image_url: "https://placehold.co/400x400/fff0f5/ff69b4?text=Born+to+Glow",
+    reviews: [{ id: 5, author: "Julia", text: "Cobertura perfeita!" }],
   },
 ]);
 
 const filters = ref({ sustainable: true, inclusive: true });
 const selected = ref(null);
 
+// Carregar dados do usuário do Supabase
+async function loadUserDataFromDatabase() {
+  if (!user.value) return;
+  
+  try {
+    const { data: profileData } = await supabase
+      .from("profiles")
+      .select("*")
+      .eq("id", user.value.id)
+      .single();
+
+    if (profileData) {
+      profile.value = profileData;
+    }
+  } catch (err) {
+    console.log("Erro ao carregar dados do usuário:", err.message);
+  }
+}
+
 onMounted(() => {
-  const u = JSON.parse(localStorage.getItem("skin_user") || "null");
-  if (u) user.value = u;
+  if (user.value) {
+    loadUserDataFromDatabase();
+  }
 });
 
 const recommendations = computed(() => {
@@ -187,8 +241,8 @@ const recommendations = computed(() => {
     .sort((a, b) => b.score - a.score);
 });
 
-function open(p) {
-  selected.value = p;
+function open(product) {
+  selected.value = product;
 }
 </script>
 
@@ -344,98 +398,11 @@ function open(p) {
   color: var(--muted);
 }
 
-/* Product Grid */
+/* Product Grid - ProductCard styles now in components/MR/ProductCard.vue */
 .grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
   gap: 20px;
-}
-
-.product-card {
-  padding: 12px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  position: relative;
-  overflow: hidden;
-
-  &:hover {
-    transform: translateY(-6px);
-    box-shadow: 0 12px 30px rgba(0, 229, 255, 0.15);
-    border-color: var(--color-sky);
-  }
-}
-
-.image-wrapper {
-  position: relative;
-  border-radius: 12px;
-  overflow: hidden;
-  margin-bottom: 12px;
-  
-  img {
-    width: 100%;
-    height: 160px;
-    object-fit: cover;
-    background: #fff;
-    transition: transform 0.5s ease;
-  }
-
-  .score-badge {
-    position: absolute;
-    top: 8px;
-    right: 8px;
-    background: rgba(0, 0, 0, 0.6);
-    color: #ffd700;
-    padding: 4px 8px;
-    border-radius: 12px;
-    font-size: 0.75rem;
-    font-weight: bold;
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    backdrop-filter: blur(4px);
-  }
-}
-
-.product-card:hover img {
-  transform: scale(1.05);
-}
-
-.card-content {
-  h4 {
-    margin: 0 0 8px;
-    font-size: 1rem;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-}
-
-.tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-}
-
-.tag {
-  font-size: 0.7rem;
-  padding: 4px 8px;
-  border-radius: 6px;
-  background: rgba(255,255,255,0.1);
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  
-  &.green {
-    background: var(--color-green);
-    color: #0d5f35;
-    border: 1px solid rgba(13, 95, 53, 0.1);
-  }
-  
-  &.purple {
-    background: rgba(187, 134, 252, 0.2);
-    color: #8a2bff;
-    border: 1px solid rgba(138, 43, 255, 0.1);
-  }
 }
 
 .empty-state {

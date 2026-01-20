@@ -105,7 +105,7 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import { toast } from "vue-sonner";
 import { useAuth } from "../composables";
@@ -127,17 +127,21 @@ const router = useRouter();
 const { signIn, signUp, getCurrentUser } = useAuth();
 
 // Carregar credenciais salvas ao montar o componente
-if (typeof window !== 'undefined') {
-  const savedCreds = JSON.parse(localStorage.getItem('skin_saved_credentials') || 'null');
-  if (savedCreds) {
-    email.value = savedCreds.email;
-    password.value = savedCreds.password;
-    rememberMe.value = true;
+onMounted(() => {
+  if (typeof window !== 'undefined') {
+    const savedCreds = JSON.parse(localStorage.getItem('skin_saved_credentials') || 'null');
+    if (savedCreds && savedCreds.email && savedCreds.password) {
+      email.value = savedCreds.email;
+      password.value = savedCreds.password;
+      rememberMe.value = true;
+    }
   }
-}
+});
 
 function toggleMode() {
   isSignup.value = !isSignup.value;
+  // Resetar checkbox ao alternar modo
+  rememberMe.value = false;
 }
 
 function openRecovery() {
@@ -204,16 +208,20 @@ async function submit() {
 
       // define usuário atual
       localStorage.setItem("skin_user", JSON.stringify(profile));
+      
+      // Limpar credenciais salvas após signup (já que é uma nova conta)
+      localStorage.removeItem('skin_saved_credentials');
     } else {
       await signIn(email.value, password.value);
       toast.success("Login efetuado com sucesso!");
 
-      // Salvar credenciais se "lembrar de mim" estiver ativado
+      // Salvar credenciais ANTES de redirecionar
       if (rememberMe.value) {
-        localStorage.setItem('skin_saved_credentials', JSON.stringify({
-          email: email.value,
+        const credsToSave = {
+          email: email.value.trim(),
           password: password.value
-        }));
+        };
+        localStorage.setItem('skin_saved_credentials', JSON.stringify(credsToSave));
       } else {
         // Remover credenciais salvas se desmarcado
         localStorage.removeItem('skin_saved_credentials');
@@ -310,46 +318,57 @@ async function submit() {
   position: relative;
   width: 44px;
   height: 24px;
+  display: inline-block;
+}
 
-  input {
-    opacity: 0;
-    width: 0;
-    height: 0;
-  }
-  
-  .toggle-switch {
-    position: absolute;
-    cursor: pointer;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(0,0,0,0.1);
-    border-radius: 34px;
-    transition: .4s;
-    border: 1px solid var(--glass-border);
-  }
-  
-  .toggle-switch:before {
-    position: absolute;
-    content: "";
-    height: 18px;
-    width: 18px;
-    left: 2px;
-    bottom: 2px;
-    background-color: white;
-    border-radius: 50%;
-    transition: .4s;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-  }
+.toggle-wrapper input {
+  opacity: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  cursor: pointer;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 2;
+}
 
-  input:checked + .toggle-switch {
-    background: var(--accent-solid);
-  }
-  
-  input:checked + .toggle-switch:before {
-    transform: translateX(20px);
-  }
+.toggle-wrapper .toggle-switch {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0,0,0,0.1);
+  border-radius: 34px;
+  transition: background-color 0.4s ease;
+  border: 1px solid var(--glass-border);
+  z-index: 1;
+  pointer-events: none;
+}
+
+.toggle-wrapper .toggle-switch::before {
+  position: absolute;
+  content: "";
+  height: 18px;
+  width: 18px;
+  left: 2px;
+  bottom: 2px;
+  background-color: white;
+  border-radius: 50%;
+  transition: transform 0.4s ease;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.toggle-wrapper input:checked + .toggle-switch {
+  background-color: var(--accent-solid);
+  border-color: var(--accent-solid);
+}
+
+.toggle-wrapper input:checked + .toggle-switch::before {
+  transform: translateX(20px);
 }
 
 .actions {

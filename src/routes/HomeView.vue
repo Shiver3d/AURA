@@ -114,6 +114,7 @@ onMounted(async () => {
 </script>
 
 <style scoped>
+  
 .title {
   margin: 2vh 0 6px;
   font-size: 20px;

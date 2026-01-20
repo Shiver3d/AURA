@@ -419,6 +419,8 @@ const updateName = async () => {
     await supabase.auth.updateUser({
       data: { full_name: profile.value.full_name },
     });
+    // Notificar HeaderBar para atualizar o nome
+    window.dispatchEvent(new CustomEvent("user-updated"));
   } catch (err) {
     alert("Erro ao atualizar nome.");
   } finally {

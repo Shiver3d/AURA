@@ -12,6 +12,7 @@
 */
 
 import { createRouter, createWebHistory } from 'vue-router'
+import { useAuth } from '../composables/useAuth'
 import { supabase } from '../services/supabase'
 
 const Login = () => import('./LoginView.vue')
@@ -19,6 +20,9 @@ const Home = () => import('./HomeView.vue')
 const Search = () => import('./SearchView.vue')
 const User = () => import('./UserView.vue')
 const AIAnalysis = () => import('./AIAnalysisView.vue')
+const About = () => import('./AboutView.vue')
+const Terms = () => import('./TermsView.vue')
+const Contact = () => import('./ContactView.vue')
 
 const routes = [
   { path: '/', redirect: '/login' },
@@ -26,15 +30,26 @@ const routes = [
   { path: '/home', name: 'Home', component: Home },
   { path: '/search', name: 'Search', component: Search },
   { path: '/user', name: 'User', component: User },
-  { path: '/ai-analysis', name: 'AIAnalysis', component: AIAnalysis }
+  { path: '/ai-analysis', name: 'ai-analysis', component: AIAnalysis },
+  { path: '/about', name: 'About', component: About },
+  { path: '/terms', name: 'Terms', component: Terms },
+  { path: '/contact-to-shiver3d', name: 'Contact', component: Contact }
 ]
 
 const router = createRouter({ history: createWebHistory(), routes })
 
 // Guard global: protege rotas contra acesso não autenticado
 router.beforeEach(async (to, from, next) => {
-  // Permite acesso à rota de login sempre
-  if (to.path === '/login') return next()
+  // Permite acesso às rotas públicas
+  const publicRoutes = ['/login', '/about', '/terms', '/contact-to-shiver3d']
+  if (publicRoutes.includes(to.path)) return next()
+
+  const { sessionRestored, restoreSession } = useAuth()
+  
+  // Aguardar restauração da sessão se ainda não foi feita
+  if (!sessionRestored.value) {
+    await restoreSession()
+  }
 
   try {
     const { data } = await supabase.auth.getUser()

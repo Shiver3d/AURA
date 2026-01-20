@@ -8,20 +8,12 @@
     </header>
 
     <div v-if="products.length > 0" class="grid">
-      <div
+      <ProductCard
         v-for="p in products"
         :key="p.id"
-        class="product card glass"
-        @click="open(p)"
-      >
-        <img :src="p.image_url" :alt="p.name" />
-        <h4>{{ p.name }}</h4>
-        <div class="tags">
-          <span class="tag">{{ p.brand }}</span>
-          <span class="tag green" v-if="p.tags?.includes('sustentavel')">Selo Verde</span>
-          <span class="tag" v-if="p.tags?.includes('refil')">Refilável</span>
-        </div>
-      </div>
+        :product="p"
+        @select="open"
+      />
     </div>
 
     <div v-else-if="!loading" class="empty-state glass">
@@ -36,27 +28,26 @@
           </button>
           
           <div class="modal-content">
-            <img :src="selected.image_url" class="modal-img" />
+            <img :src="selected.image_url || 'https://via.placeholder.com/300x300?text=Produto'" class="modal-img" />
             <div class="modal-info">
               <h3>{{ selected.name }}</h3>
-              <span class="brand-badge">{{ selected.brand }}</span>
-              <p class="description">{{ selected.description }}</p>
+              <span v-if="selected.category" class="category-badge">{{ formatCategory(selected.category) }}</span>
+              <p v-if="selected.description" class="description">{{ selected.description }}</p>
+              
+              <div class="rating-section" v-if="selected.rating">
+                <span class="rating">⭐ {{ selected.rating.toFixed(1) }}</span>
+                <span v-if="selected.reviews_count" class="reviews-count">({{ selected.reviews_count }} avaliações)</span>
+              </div>
+              
+              <div class="price-section" v-if="selected.price">
+                <span class="price">R$ {{ formatPrice(selected.price) }}</span>
+              </div>
               
               <div class="modal-actions">
-                <button class="btn btn-primary">Comprar Agora</button>
+                <button class="btn btn-primary">Adicionar ao Carrinho</button>
               </div>
             </div>
           </div>
-
-          <section class="reviews">
-            <h4>Avaliações da Comunidade</h4>
-            <ul v-if="selected.reviews?.length">
-              <li v-for="r in selected.reviews" :key="r.id">
-                <strong>{{ r.author }}</strong>: {{ r.text }}
-              </li>
-            </ul>
-            <p v-else class="no-reviews">Seja o primeiro a avaliar este produto!</p>
-          </section>
         </div>
       </div>
     </Transition>
@@ -69,6 +60,7 @@ import { useRoute } from "vue-router";
 import { supabase } from "../services/supabase";
 import { useAuth } from "../composables/useAuth";
 import { Icon } from "@iconify/vue";
+import ProductCard from "../components/MR/ProductCard.vue";
 
 const route = useRoute();
 const { user } = useAuth();
@@ -77,6 +69,23 @@ const products = ref([]);
 const loading = ref(false);
 const selected = ref(null);
 const searchQuery = ref(route.query.q || "");
+
+// Formatar categoria para exibição
+const formatCategory = (category) => {
+  const categories = {
+    skincare: 'Cuidados com a Pele',
+    makeup: 'Maquiagem',
+    haircare: 'Cuidados com Cabelos',
+    bodycare: 'Cuidados com o Corpo',
+    tools: 'Ferramentas'
+  }
+  return categories[category] || category
+}
+
+// Formatar preço
+const formatPrice = (price) => {
+  return typeof price === 'number' ? price.toFixed(2).replace('.', ',') : price
+}
 
 // Função para buscar produtos no Supabase
 const fetchProducts = async () => {
@@ -112,8 +121,8 @@ const fetchProducts = async () => {
 };
 
 // Abre o modal de detalhes
-function open(p) {
-  selected.value = p;
+function open(product) {
+  selected.value = product;
 }
 
 // Observa mudanças na URL (quando o usuário pesquisa algo novo no Header)
@@ -130,47 +139,59 @@ onMounted(() => {
 .search-root {
   margin-top: 10vh;
   min-height: 80vh;
+  padding: 20px;
 }
 
 .search-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 2rem;
+  margin-bottom: 3rem;
+  gap: 20px;
+
+  h2 {
+    margin: 0;
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--text);
+  }
+}
+
+.loader {
+  color: var(--muted);
+  font-size: 1rem;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
 }
 
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-  gap: 25px;
-}
-
-.product {
-  padding: 15px;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  
-  &:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 25px rgba(0, 229, 255, 0.2);
-  }
-
-  img {
-    width: 100%;
-    height: 180px;
-    object-fit: contain;
-    background: white; // Produtos costumam ter fundo branco
-    border-radius: 12px;
-    margin-bottom: 12px;
-  }
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 28px;
+  margin-bottom: 40px;
 }
 
 .empty-state {
-  padding: 40px;
+  padding: 60px 40px;
   text-align: center;
   border-radius: 15px;
+  min-height: 300px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  p {
+    margin: 0;
+    font-size: 1.2rem;
+    color: var(--muted);
+  }
 }
 
-/* Modal Estilo PlayStation/Aero */
+/* Modal Estilo Premium */
 .modal-overlay {
   position: fixed;
   inset: 0;
@@ -180,66 +201,171 @@ onMounted(() => {
   align-items: center;
   justify-content: center;
   z-index: 100;
+  padding: 20px;
 }
 
 .modal {
-  width: 800px;
-  max-width: 90%;
+  width: 100%;
+  max-width: 900px;
   max-height: 90vh;
   overflow-y: auto;
-  padding: 30px;
+  padding: 40px;
   position: relative;
   animation: modalIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  border-radius: 20px;
 }
 
 .close-btn {
   position: absolute;
   right: 20px;
   top: 20px;
-  background: none;
-  border: none;
-  color: white;
-  font-size: 24px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: var(--text);
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
   cursor: pointer;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background: rgba(0, 229, 255, 0.2);
+    border-color: rgba(0, 229, 255, 0.4);
+  }
 }
 
 .modal-content {
   display: flex;
-  gap: 30px;
-  @media (max-width: 600px) {
-    flex-direction: column;
-  }
+  gap: 40px;
+  margin-bottom: 30px;
 }
 
 .modal-img {
-  width: 250px;
-  height: 250px;
-  object-fit: contain;
-  background: white;
-  border-radius: 15px;
+  width: 300px;
+  height: 300px;
+  object-fit: cover;
+  border-radius: 16px;
+  flex-shrink: 0;
 }
 
-.brand-badge {
+.modal-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+
+  h3 {
+    margin: 0 0 12px;
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--text);
+  }
+}
+
+.category-badge {
   display: inline-block;
-  background: rgba(0, 229, 255, 0.2);
-  padding: 4px 12px;
+  background: linear-gradient(135deg, rgba(0, 229, 255, 0.2), rgba(0, 229, 255, 0.1));
+  border: 1px solid rgba(0, 229, 255, 0.3);
+  color: #00e5ff;
+  padding: 6px 14px;
   border-radius: 20px;
   font-size: 0.8rem;
-  margin-bottom: 1rem;
+  font-weight: 600;
+  margin-bottom: 16px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  width: fit-content;
 }
 
 .description {
-  line-height: 1.6;
-  margin-bottom: 2rem;
+  color: var(--muted);
+  line-height: 1.7;
+  margin-bottom: 20px;
+  font-size: 1rem;
+}
+
+.rating-section {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+  padding: 12px 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+
+  .rating {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #ffd700;
+  }
+
+  .reviews-count {
+    color: var(--muted);
+    font-size: 0.9rem;
+  }
+}
+
+.price-section {
+  margin-bottom: 24px;
+
+  .price {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #00e5ff;
+    text-shadow: 0 0 12px rgba(0, 229, 255, 0.3);
+  }
+}
+
+.modal-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: auto;
+
+  .btn {
+    flex: 1;
+    padding: 14px 24px;
+    background: linear-gradient(135deg, #00e5ff, #0099cc);
+    color: #000;
+    border: none;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+
+    &:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 30px rgba(0, 229, 255, 0.3);
+    }
+
+    &:active {
+      transform: translateY(-2px);
+    }
+  }
 }
 
 @keyframes modalIn {
-  from { opacity: 0; transform: scale(0.9) translateY(20px); }
-  to { opacity: 1; transform: scale(1) translateY(0); }
+  from {
+    opacity: 0;
+    transform: scale(0.9) translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
 }
 
-.fade-enter-active, .fade-leave-active { transition: opacity 0.3s; }
-.fade-enter-from, .fade-leave-to { opacity: 0; }
+.fade-enter-active, .fade-leave-active {
+  transition: opacity 0.3s ease;
+}
+
+.fade-enter-from, .fade-leave-to {
+  opacity: 0;
+}
 
 /* Mobile Responsiveness */
 @media (max-width: 768px) {
@@ -248,146 +374,89 @@ onMounted(() => {
     min-height: 70vh;
     padding: 16px;
   }
-  
+
   .search-header {
     flex-direction: column;
     align-items: flex-start;
-    gap: 12px;
-    margin-bottom: 1.5rem;
+    margin-bottom: 2rem;
+
+    h2 {
+      font-size: 1.4rem;
+    }
   }
-  
-  .search-header h2 {
-    font-size: 20px;
-  }
-  
+
   .grid {
-    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-    gap: 16px;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 20px;
   }
-  
-  .product img {
-    height: 140px;
-    margin-bottom: 8px;
-  }
-  
-  .product h4 {
-    font-size: 14px;
-  }
-  
-  .tags {
-    font-size: 11px;
-  }
-  
+
   .modal-content {
-    gap: 16px;
+    flex-direction: column;
+    gap: 20px;
   }
-  
+
   .modal-img {
-    width: 180px;
-    height: 180px;
-  }
-  
-  .modal-info {
-    flex: 1;
+    width: 100%;
+    height: auto;
+    max-height: 250px;
   }
 }
 
 @media (max-width: 480px) {
   .search-root {
     margin-top: 6vh;
-    padding: 8px;
+    padding: 12px;
   }
-  
+
   .search-header {
-    margin-bottom: 1rem;
+    h2 {
+      font-size: 1.2rem;
+    }
   }
-  
-  .search-header h2 {
-    font-size: 16px;
-    word-break: break-word;
-  }
-  
+
   .grid {
-    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-    gap: 12px;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 16px;
   }
-  
-  .product {
-    padding: 10px;
-  }
-  
-  .product img {
-    height: 120px;
-  }
-  
-  .product h4 {
-    font-size: 12px;
-    margin-bottom: 6px;
-  }
-  
-  .tags {
-    font-size: 10px;
-    gap: 4px;
-  }
-  
-  .tag {
-    padding: 2px 6px;
-  }
-  
-  .empty-state {
-    padding: 20px;
-    font-size: 14px;
-  }
-  
+
   .modal {
-    width: 100%;
-    max-width: none;
-    padding: 16px;
-    max-height: 95vh;
+    padding: 20px;
   }
-  
+
   .close-btn {
-    right: 10px;
-    top: 10px;
-    font-size: 20px;
+    right: 12px;
+    top: 12px;
+    width: 36px;
+    height: 36px;
   }
-  
+
   .modal-content {
-    flex-direction: column;
-    gap: 12px;
+    gap: 16px;
   }
-  
+
   .modal-img {
-    width: 100%;
-    height: 150px;
+    max-height: 200px;
   }
-  
-  .modal-info h3 {
-    font-size: 18px;
+
+  .modal-info {
+    h3 {
+      font-size: 1.3rem;
+    }
   }
-  
-  .brand-badge {
-    font-size: 0.75rem;
-    padding: 2px 8px;
-  }
-  
+
   .description {
-    font-size: 13px;
-    line-height: 1.5;
-    margin-bottom: 1rem;
+    font-size: 0.9rem;
   }
-  
-  .reviews {
-    margin-top: 1rem;
+
+  .price-section .price {
+    font-size: 1.6rem;
   }
-  
-  .reviews h4 {
-    font-size: 14px;
-  }
-  
-  .reviews li {
-    font-size: 12px;
-    margin-bottom: 8px;
+
+  .modal-actions {
+    .btn {
+      padding: 12px 16px;
+      font-size: 0.9rem;
+    }
   }
 }
 </style>

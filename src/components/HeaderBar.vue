@@ -17,7 +17,7 @@
         Voltar
       </button>
       <div v-else class="brand">
-        Bem vindo, <strong>{{ userName }}</strong>
+        Bem vindo, <strong>{{ displayName }}</strong>
       </div>
     </div>
     <div class="center">
@@ -73,86 +73,88 @@ import { useAuth } from "../composables";
 const q = ref("");
 const router = useRouter();
 const route = useRoute();
-const { user } = useAuth();
+const { user, firstName } = useAuth();
 
-const userName = ref("Visitante");
+const profile = ref({
+  full_name: "",
+  avatar_url: "",
+});
 const theme = ref("dark");
 const userAvatar = ref(null);
 
-// Carregar avatar do Supabase
-async function loadAvatarFromDatabase() {
+// Computed para manter o firstName sincronizado com o database
+const displayName = computed(() => {
+  const fullName = profile.value.full_name || 
+                   user.value?.user_metadata?.full_name || 
+                   "Visitante";
+  return fullName.split(" ")[0];
+});
+
+// Carregar dados completos do usuário do Supabase
+async function loadUserDataFromDatabase() {
   if (!user.value) return;
   
   try {
     const { data: profileData } = await supabase
       .from("profiles")
-      .select("avatar_url")
+      .select("*")
       .eq("id", user.value.id)
       .single();
 
-    if (profileData && profileData.avatar_url) {
-      userAvatar.value = profileData.avatar_url;
+    if (profileData) {
+      profile.value = profileData;
+      userAvatar.value = profileData.avatar_url || null;
     } else {
       userAvatar.value = null;
     }
   } catch (err) {
-    console.log("Erro ao carregar avatar:", err.message);
+    console.log("Erro ao carregar dados do usuário:", err.message);
     userAvatar.value = null;
   }
 }
 
-// Carregar dados do localStorage (fallback)
-function loadUserDataFromStorage() {
-  const u = JSON.parse(localStorage.getItem("skin_user") || "null");
-  if (u && u.name) {
-    userName.value = u.name;
-  }
-}
-
 function handleUserUpdate() {
-  // Quando UserView atualiza o avatar, recarrega aqui
-  loadAvatarFromDatabase();
-  loadUserDataFromStorage();
+  // Quando UserView atualiza o avatar ou nome, recarrega aqui
+  loadUserDataFromDatabase();
 }
 
 // Watch para recarregar quando usuário muda
 watch(user, () => {
   if (user.value) {
-    loadUserDataFromStorage();
-    loadAvatarFromDatabase();
+    loadUserDataFromDatabase();
   }
 });
 
 onMounted(() => {
-  loadUserDataFromStorage();
-  
   // Sincroniza com o sistema de tema do App.vue
   const t = localStorage.getItem("theme") || "dark";
   theme.value = t;
   document.documentElement.setAttribute("data-theme", t);
   
-  // Carrega avatar do banco
+  // Carrega dados do usuário do banco
   if (user.value) {
-    loadAvatarFromDatabase();
+    loadUserDataFromDatabase();
   }
   
   // Escuta atualizações do usuário
   window.addEventListener("user-updated", handleUserUpdate);
   window.addEventListener("avatar-updated", handleUserUpdate);
   
-  // Recarrega avatar a cada 5 segundos para sincronizar mudanças
-  const avatarRefreshInterval = setInterval(() => {
+  // Recarrega dados a cada 5 segundos para sincronizar mudanças
+  const userRefreshInterval = setInterval(() => {
     if (user.value) {
-      loadAvatarFromDatabase();
+      loadUserDataFromDatabase();
     }
   }, 5000);
   
   // Cleanup
-  onBeforeUnmount(() => {
+  const cleanup = () => {
     window.removeEventListener("user-updated", handleUserUpdate);
     window.removeEventListener("avatar-updated", handleUserUpdate);
-    clearInterval(avatarRefreshInterval);
-  });
+    clearInterval(userRefreshInterval);
+  };
+  
+  onBeforeUnmount(cleanup);
 });
 
 onBeforeUnmount(() => {
@@ -324,19 +326,19 @@ function goBack() {
 
 @media (max-width: 480px) {
   .header {
-    padding: 6px 8px;
+    padding: 16px 16px;
     gap: 4px;
   }
   .icon-wrap { 
-    width: 26px; 
-    height: 26px; 
+    width: 70px; 
+    height: 50px; 
   }
   .icon-wrap svg {
-    width: 22px !important;
-    height: 22px !important;
+    width: 30px;
+    height: 30px;
   }
   .label { 
-    font-size: 9px; 
+    font-size: 15px; 
     margin-top: 2px;
   }
   .search input {
@@ -345,8 +347,8 @@ function goBack() {
     font-size: 12px;
   }
   .profile-avatar {
-    width: 26px;
-    height: 26px;
+    width: 30px;
+    height: 30px;
   }
 }
 </style>

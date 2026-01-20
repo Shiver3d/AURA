@@ -16,9 +16,11 @@ import HeaderBar from './components/HeaderBar.vue'
 import FooterBar from './components/FooterBar.vue'
 import DynamicWaves from './components/DynamicWaves.vue'
 import { useKeyboardShortcuts } from './composables'
+import { useAuth } from './composables/useAuth'
 import './main.scss'
 
 const route = useRoute()
+const { restoreSession, sessionRestored } = useAuth()
 
 // Ativa atalhos de teclado globalmente
 useKeyboardShortcuts()
@@ -39,7 +41,10 @@ const theme = ref(getInitialTheme())
 const colorTheme = ref(localStorage.getItem('colorTheme') || 'blue')
 
 // Inicializa o tema imediatamente na montagem
-onMounted(() => {
+onMounted(async () => {
+  // Restaurar sessão ANTES de renderizar qualquer coisa
+  await restoreSession()
+  
   document.documentElement.setAttribute('data-theme', theme.value)
   document.documentElement.setAttribute('data-color', colorTheme.value)
   
@@ -81,11 +86,11 @@ watchEffect(() => {
 <template>
   <div id="app">
     <DynamicWaves />
-    <HeaderBar v-if="route.path !== '/login' && route.path !== '/user'" />
+    <HeaderBar v-if="sessionRestored && route.path !== '/login' && route.path !== '/user'" />
     <transition name="route-zoom" mode="out-in">
       <router-view />
     </transition>
-    <FooterBar v-if="route.path !== '/login' && route.path !== '/user'" />
+    <FooterBar v-if="sessionRestored && route.path !== '/login' && route.path !== '/user'" />
   </div>
 </template>
 
