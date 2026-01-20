@@ -54,7 +54,7 @@
             ></textarea>
           </div>
 
-          <button type="submit" class="btn-submit" :disabled="loading">
+          <button type="submit" class="btn" :disabled="loading">
             <Icon v-if="!loading" icon="lucide:send" />
             <span v-if="!loading">Enviar Mensagem</span>
             <span v-else>Enviando...</span>
@@ -109,13 +109,12 @@
             <h3>GitHub</h3>
             <p>Veja meus projetos abertos</p>
           </a>
-        </div>
 
-        <div class="email-card glass">
-          <Icon icon="lucide:mail" />
-          <h3>Email Direto</h3>
-          <p>shiver3dcontact@gmail.com</p>
-          <a href="mailto:shiver3dcontact@gmail.com" class="email-link">Enviar Email</a>
+          <a href="mailto:shiver3dcontact@gmail.com" target="_blank" class="social-card email"> 
+            <Icon icon="lucide:mail" />
+            <h3>Email Direto</h3>
+            <p>shiver3dcontact@gmail.com</p>
+          </a>
         </div>
       </section>
 
@@ -221,11 +220,8 @@ ${form.value.message}
   h1 {
     margin: 0;
     font-size: 3rem;
-    font-weight: 900;
-    background: var(--accent);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    font-weight: 600;
+    text-shadow: var(--txt-hover);
     margin-bottom: 16px;
   }
 
@@ -314,12 +310,10 @@ ${form.value.message}
   }
 }
 
-.btn-submit {
+.btn {
   padding: 14px 24px;
-  background: var(--accent);
   border: none;
   border-radius: 8px;
-  color: white;
   font-weight: 700;
   font-size: 1rem;
   cursor: pointer;
@@ -332,7 +326,6 @@ ${form.value.message}
 
   &:hover:not(:disabled) {
     transform: translateY(-2px);
-    box-shadow: 0 12px 30px rgba(0, 229, 255, 0.3);
   }
 
   &:disabled {
@@ -422,7 +415,6 @@ ${form.value.message}
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
   gap: 16px;
-  margin-bottom: 24px;
 }
 
 .social-card {
@@ -441,7 +433,7 @@ ${form.value.message}
   &:hover {
     border-color: var(--color-sky);
     transform: translateY(-8px);
-    box-shadow: 0 12px 30px rgba(0, 229, 255, 0.15);
+    box-shadow: var(--accent-solid);
   }
 
   svg {
@@ -483,6 +475,12 @@ ${form.value.message}
       color: #333;
     }
   }
+    &.email:hover {
+        border-color: #21a849;
+        svg {
+        color: #21a849;
+        }
+    }
 }
 
 .email-card {

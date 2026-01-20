@@ -51,7 +51,7 @@
 
         <div class="faq-item">
           <button class="faq-question" @click="toggleFaq(2)">
-            <span>Que tipos de emails você me envia?</span>
+            <span>Que tipos de emails são enviados?</span>
             <Icon icon="lucide:chevron-down" :class="{ open: activeFaq === 2 }" />
           </button>
           <div v-show="activeFaq === 2" class="faq-answer">
@@ -60,12 +60,12 @@
             </p>
             <ul>
               <li><strong>Boas-vindas:</strong> Ao criar sua conta</li>
-              <li><strong>Recuperação de Senha:</strong> Quando você solicitar reset</li>
-              <li><strong>Confirmação de Email:</strong> Para verificar endereço de email</li>
-              <li><strong>Mudança de Conta:</strong> Se alterar informações sensíveis</li>
+              <li><strong>Recuperação de Senha:</strong> Quando você solicitar mudança de senha.</li>
+              <li><strong>Confirmação de Email:</strong> Para verificar endereço de email.</li>
+              <li><strong>Mudança de Conta:</strong> Se alterar informações sensíveis.</li>
             </ul>
             <p style="margin-top: 16px;">
-              ✅ <strong>O que NÃO fazemos:</strong> Não enviamos spam, newsletters não solicitadas, 
+              ❌ <strong>O que o time do AURA <span class="not">NÃO</span> faz:</strong> Não enviamos spam, newsletters não solicitadas, 
               ou promoções de terceiros.
             </p>
           </div>
@@ -78,15 +78,15 @@
           </button>
           <div v-show="activeFaq === 3" class="faq-answer">
             <p>
-              Você tem direito total sobre seus dados:
+              Você tem direito total sobre seus dados, todavia, peço atenção aos seguintes pontos:
             </p>
             <ul>
-              <li><strong>Deletar Conta:</strong> Pode deletar sua conta a qualquer momento nas configurações</li>
-              <li><strong>Apagar Dados:</strong> Histórico de busca, preferências e nome serão completamente removidos</li>
-              <li><strong>Retenção:</strong> Dados são apagados permanentemente em 30 dias</li>
+              <li><strong>Deletar Conta:</strong> Pode deletar sua conta a qualquer momento. Por ser um teste experimental de funcionalidades constantemente estou refatorando a base de dados, pode ser que algum momento seus dados sejam excluídos.</li>
+              <li><strong>Apagar Dados:</strong> Histórico de busca, preferências e nome serão completamente removidos junto ao acesso.</li>
+              <li><strong>Quero deletar minha conta. Como?</strong> Se quiser me notificar sobre exclusão, entre em contato comigo diretamente.</li>
             </ul>
             <p style="margin-top: 16px;">
-              Reviews públicos que você postou permanecerão (anônimos), pois contribuem para a comunidade,
+              Reviews públicos que você postou permanecerão (anônimos, contabilizando somente estrelas), pois contribuem para a comunidade,
               mas sua identidade será desassociada.
             </p>
           </div>
@@ -159,14 +159,12 @@ const toggleFaq = (index) => {
   margin-bottom: 40px;
   border-radius: var(--radius);
 
+
   h1 {
     margin: 0;
     font-size: 3rem;
-    font-weight: 900;
-    background: var(--accent);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    font-weight: 600;
+    text-shadow: var(--txt-hover);
     margin-bottom: 16px;
   }
 
@@ -203,6 +201,13 @@ const toggleFaq = (index) => {
     padding-top: 16px;
   }
 }
+
+.not {
+    color: rgb(224, 84, 84);
+    text-decoration: underline;
+    text-decoration-color: var(--accent-solid);
+}
+
 
 .faq-question {
   width: 100%;

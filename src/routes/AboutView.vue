@@ -147,7 +147,7 @@ import { RouterLink } from "vue-router";
   h1 {
     margin: 0;
     font-size: 3rem;
-    font-weight: 900;
+    font-weight: 600;
     text-shadow: var(--txt-hover);
     margin-bottom: 16px;
   }
