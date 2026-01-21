@@ -15,6 +15,7 @@ import { watchEffect, ref, onMounted } from 'vue'
 import HeaderBar from './components/HeaderBar.vue'
 import FooterBar from './components/FooterBar.vue'
 import DynamicWaves from './components/DynamicWaves.vue'
+import { SpeedInsights } from '@vercel/speed-insights/vue'
 import { useKeyboardShortcuts } from './composables'
 import { useAuth } from './composables/useAuth'
 import './main.scss'
@@ -91,6 +92,7 @@ watchEffect(() => {
       <router-view />
     </transition>
     <FooterBar v-if="sessionRestored && route.path !== '/login' && route.path !== '/user'" />
+    <SpeedInsights />
   </div>
 </template>
 
