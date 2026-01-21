@@ -20,31 +20,59 @@
       <p>Nenhum produto encontrado para sua busca.</p>
     </div>
 
+    <!-- Mobile Search Input Bar -->
+    <div class="mobile-search-bar glass">
+      <input
+        v-model="mobileSearchQuery"
+        @keyup.enter="onMobileSearch"
+        placeholder="Pesquisar..."
+        aria-label="Pesquisar produtos"
+        class="mobile-search-input"
+      />
+      <button @click="onMobileSearch" class="mobile-search-btn">
+        <Icon icon="tabler:search" width="20" height="20" />
+      </button>
+    </div>
+
     <Transition name="fade">
       <div v-if="selected" class="modal-overlay" @click.self="selected = null">
         <div class="modal glass">
           <button class="close-btn" @click="selected = null">
-            <Icon icon="lucide:x" />
+            <Icon icon="lucide:x" width="20" />
           </button>
           
           <div class="modal-content">
-            <img :src="selected.image_url || 'https://via.placeholder.com/300x300?text=Produto'" class="modal-img" />
+            <img :src="selected.image_url || 'https://via.placeholder.com/300x300?text=Produto'" :alt="selected.name" class="modal-img" />
             <div class="modal-info">
-              <h3>{{ selected.name }}</h3>
-              <span v-if="selected.category" class="category-badge">{{ formatCategory(selected.category) }}</span>
-              <p v-if="selected.description" class="description">{{ selected.description }}</p>
-              
-              <div class="rating-section" v-if="selected.rating">
-                <span class="rating">⭐ {{ selected.rating.toFixed(1) }}</span>
-                <span v-if="selected.reviews_count" class="reviews-count">({{ selected.reviews_count }} avaliações)</span>
+              <div class="modal-header">
+                <div>
+                  <h3>{{ selected.name }}</h3>
+                  <span v-if="selected.category" class="category-badge">{{ formatCategory(selected.category) }}</span>
+                </div>
               </div>
               
-              <div class="price-section" v-if="selected.price">
-                <span class="price">R$ {{ formatPrice(selected.price) }}</span>
+              <p v-if="selected.description" class="description">{{ selected.description }}</p>
+              
+              <div class="product-details">
+                <div class="detail-row" v-if="selected.rating">
+                  <span class="detail-label">Avaliação</span>
+                  <span class="detail-value">⭐ {{ selected.rating.toFixed(1) }}</span>
+                </div>
+                <div class="detail-row" v-if="selected.reviews_count">
+                  <span class="detail-label">Avaliações</span>
+                  <span class="detail-value">{{ selected.reviews_count }}</span>
+                </div>
+                <div class="detail-row" v-if="selected.price">
+                  <span class="detail-label">Preço</span>
+                  <span class="price">R$ {{ formatPrice(selected.price) }}</span>
+                </div>
               </div>
               
               <div class="modal-actions">
-                <button class="btn btn-primary">Adicionar ao Carrinho</button>
+                <button class="btn-action">
+                  <Icon icon="lucide:shopping-bag" width="20" />
+                  Adicionar ao Carrinho
+                </button>
               </div>
             </div>
           </div>
@@ -56,19 +84,21 @@
 
 <script setup>
 import { ref, onMounted, watch } from "vue";
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import { supabase } from "../services/supabase";
 import { useAuth } from "../composables/useAuth";
 import { Icon } from "@iconify/vue";
 import ProductCard from "../components/MR/ProductCard.vue";
 
 const route = useRoute();
+const router = useRouter();
 const { user } = useAuth();
 
 const products = ref([]);
 const loading = ref(false);
 const selected = ref(null);
 const searchQuery = ref(route.query.q || "");
+const mobileSearchQuery = ref(route.query.q || "");
 
 // Formatar categoria para exibição
 const formatCategory = (category) => {
@@ -125,9 +155,18 @@ function open(product) {
   selected.value = product;
 }
 
+// Função para pesquisa mobile
+function onMobileSearch() {
+  const query = mobileSearchQuery.value.trim();
+  if (query) {
+    router.push(`/search?q=${encodeURIComponent(query)}`);
+  }
+}
+
 // Observa mudanças na URL (quando o usuário pesquisa algo novo no Header)
 watch(() => route.query.q, () => {
   fetchProducts();
+  mobileSearchQuery.value = route.query.q || "";
 });
 
 onMounted(() => {
@@ -206,13 +245,14 @@ onMounted(() => {
 
 .modal {
   width: 100%;
-  max-width: 900px;
-  max-height: 90vh;
+  max-width: 800px;
+  max-height: 85vh;
   overflow-y: auto;
-  padding: 40px;
+  padding: 32px;
   position: relative;
   animation: modalIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-  border-radius: 20px;
+  border-radius: var(--radius);
+  border: 1px solid var(--glass-border);
 }
 
 .close-btn {
@@ -220,7 +260,7 @@ onMounted(() => {
   right: 20px;
   top: 20px;
   background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid var(--glass-border);
   color: var(--text);
   width: 40px;
   height: 40px;
@@ -232,126 +272,142 @@ onMounted(() => {
   transition: all 0.3s ease;
 
   &:hover {
-    background: rgba(0, 229, 255, 0.2);
-    border-color: rgba(0, 229, 255, 0.4);
+    background: rgba(46, 163, 255, 0.15);
+    border-color: var(--color-sky);
+    color: var(--color-sky);
   }
 }
 
 .modal-content {
   display: flex;
-  gap: 40px;
-  margin-bottom: 30px;
+  gap: 32px;
+  margin-bottom: 0;
 }
 
 .modal-img {
-  width: 300px;
-  height: 300px;
+  width: 240px;
+  height: 240px;
   object-fit: cover;
-  border-radius: 16px;
+  border-radius: 12px;
   flex-shrink: 0;
+  border: 1px solid var(--glass-border);
 }
 
 .modal-info {
   flex: 1;
   display: flex;
   flex-direction: column;
+  gap: 16px;
+}
 
+.modal-header {
   h3 {
-    margin: 0 0 12px;
-    font-size: 1.6rem;
+    margin: 0 0 8px;
+    font-size: 1.5rem;
     font-weight: 700;
     color: var(--text);
+    line-height: 1.3;
   }
 }
 
 .category-badge {
   display: inline-block;
-  background: linear-gradient(135deg, rgba(0, 229, 255, 0.2), rgba(0, 229, 255, 0.1));
-  border: 1px solid rgba(0, 229, 255, 0.3);
-  color: #00e5ff;
-  padding: 6px 14px;
-  border-radius: 20px;
-  font-size: 0.8rem;
+  background: var(--accent-solid);
+  color: var(--color-sky);
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 0.75rem;
   font-weight: 600;
-  margin-bottom: 16px;
   text-transform: uppercase;
   letter-spacing: 0.5px;
+  border: 1px solid rgba(46, 163, 255, 0.2);
   width: fit-content;
 }
 
 .description {
   color: var(--muted);
-  line-height: 1.7;
-  margin-bottom: 20px;
-  font-size: 1rem;
+  line-height: 1.6;
+  margin: 0;
+  font-size: 0.95rem;
 }
 
-.rating-section {
+.product-details {
   display: flex;
-  align-items: center;
+  flex-direction: column;
   gap: 12px;
-  margin-bottom: 16px;
-  padding: 12px 0;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-
-  .rating {
-    font-size: 1.1rem;
-    font-weight: 600;
-    color: #ffd700;
-  }
-
-  .reviews-count {
-    color: var(--muted);
-    font-size: 0.9rem;
-  }
+  padding: 16px 0;
+  border-top: 1px solid var(--glass-border);
+  border-bottom: 1px solid var(--glass-border);
 }
 
-.price-section {
-  margin-bottom: 24px;
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+}
 
-  .price {
-    font-size: 2rem;
-    font-weight: 800;
-    color: #00e5ff;
-    text-shadow: 0 0 12px rgba(0, 229, 255, 0.3);
-  }
+.detail-label {
+  color: var(--muted);
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.detail-value {
+  color: var(--text);
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.price {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: var(--color-sky);
+  text-shadow: 0 0 12px rgba(46, 163, 255, 0.2);
 }
 
 .modal-actions {
   display: flex;
   gap: 12px;
   margin-top: auto;
+  width: 100%;
+}
 
-  .btn {
-    flex: 1;
-    padding: 14px 24px;
-    background: linear-gradient(135deg, #00e5ff, #0099cc);
-    color: #000;
-    border: none;
-    border-radius: 12px;
-    font-size: 1rem;
-    font-weight: 700;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    text-transform: uppercase;
-    letter-spacing: 1px;
+.btn-action {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 16px;
+  background: var(--panel-bg);
+  border: 1px solid var(--glass-border);
+  color: var(--text);
+  border-radius: 10px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.2, 0.9, 0.3, 1);
+  gap: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 
-    &:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 12px 30px rgba(0, 229, 255, 0.3);
-    }
+  &:hover {
+    background: var(--glass-bg);
+    border-color: var(--color-sky);
+    color: var(--color-sky);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(46, 163, 255, 0.15);
+  }
 
-    &:active {
-      transform: translateY(-2px);
-    }
+  &:active {
+    transform: translateY(-1px);
   }
 }
 
 @keyframes modalIn {
   from {
     opacity: 0;
-    transform: scale(0.9) translateY(20px);
+    transform: scale(0.95) translateY(20px);
   }
   to {
     opacity: 1;
@@ -365,6 +421,11 @@ onMounted(() => {
 
 .fade-enter-from, .fade-leave-to {
   opacity: 0;
+}
+
+/* Mobile Search Input Bar */
+.mobile-search-bar {
+  display: none;
 }
 
 /* Mobile Responsiveness */
@@ -390,6 +451,12 @@ onMounted(() => {
     gap: 20px;
   }
 
+  .modal {
+    max-width: 95%;
+    padding: 24px;
+    max-height: 90vh;
+  }
+
   .modal-content {
     flex-direction: column;
     gap: 20px;
@@ -397,8 +464,14 @@ onMounted(() => {
 
   .modal-img {
     width: 100%;
-    height: auto;
-    max-height: 250px;
+    height: 220px;
+  }
+
+  .close-btn {
+    width: 36px;
+    height: 36px;
+    right: 16px;
+    top: 16px;
   }
 }
 
@@ -406,6 +479,9 @@ onMounted(() => {
   .search-root {
     margin-top: 6vh;
     padding: 12px;
+    padding-bottom: 16vh;
+    display: flex;
+    flex-direction: column;
   }
 
   .search-header {
@@ -421,13 +497,7 @@ onMounted(() => {
 
   .modal {
     padding: 20px;
-  }
-
-  .close-btn {
-    right: 12px;
-    top: 12px;
-    width: 36px;
-    height: 36px;
+    max-height: 95vh;
   }
 
   .modal-content {
@@ -435,7 +505,14 @@ onMounted(() => {
   }
 
   .modal-img {
-    max-height: 200px;
+    height: 180px;
+  }
+
+  .close-btn {
+    right: 12px;
+    top: 12px;
+    width: 36px;
+    height: 36px;
   }
 
   .modal-info {
@@ -448,14 +525,79 @@ onMounted(() => {
     font-size: 0.9rem;
   }
 
-  .price-section .price {
-    font-size: 1.6rem;
+  .price {
+    font-size: 1.3rem;
   }
 
   .modal-actions {
-    .btn {
-      padding: 12px 16px;
-      font-size: 0.9rem;
+    .btn-action {
+      padding: 11px 12px;
+      font-size: 0.85rem;
+      gap: 6px;
+    }
+  }
+
+  .mobile-search-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 41;
+    display: flex;
+    gap: 10px;
+    padding: 10px;
+    border-radius: 0;
+    border: none;
+    border-bottom: 1px solid var(--glass-border);
+    background: var(--panel-bg);
+    backdrop-filter: blur(8px);
+    margin: 0;
+  }
+
+  .search-root {
+    margin-top: 8vh !important;
+  }
+
+  .mobile-search-input {
+    flex: 1;
+    padding: 8px 12px;
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 6px;
+    color: var(--text);
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+
+    &::placeholder {
+      color: var(--muted);
+    }
+
+    &:focus {
+      outline: none;
+      border-color: var(--color-sky);
+      box-shadow: 0 0 12px rgba(46, 163, 255, 0.15);
+    }
+  }
+
+  .mobile-search-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 12px;
+    background: var(--accent-solid);
+    border: 1px solid var(--color-sky);
+    color: var(--color-sky);
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.2, 0.9, 0.3, 1);
+    font-weight: 600;
+
+    &:hover {
+      background: rgba(46, 163, 255, 0.25);
+    }
+
+    &:active {
+      opacity: 0.8;
     }
   }
 }

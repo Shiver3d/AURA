@@ -114,13 +114,6 @@ onMounted(async () => {
 </script>
 
 <style scoped>
-  
-.title {
-  margin: 2vh 0 6px;
-  font-size: 20px;
-  font-weight: 700;
-  text-shadow: var(--txt-hover);
-}
 
 .btn {
   display: inline-flex;
@@ -144,10 +137,13 @@ onMounted(async () => {
   text-align: center;
 }
 .hero-inner h1 {
-  font-size: 28px;
+  font-size: 3rem;
   margin-bottom: 6px;
+  font-weight: 700;
+  text-shadow: var(--txt-hover);
 }
 .hero-inner p {
+  font-size: 1.2rem;
   text-shadow: var(--txt-hover);
   margin-bottom: 16px;
   color: var(--muted);
@@ -227,11 +223,11 @@ onMounted(async () => {
   }
 
   .hero-inner h1 {
-    font-size: 22px;
+    font-size: 2rem;
   }
 
   .hero-inner p {
-    font-size: 14px;
+    font-size: 1.4rem;
   }
 
   .hero-actions {

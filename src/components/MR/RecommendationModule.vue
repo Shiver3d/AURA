@@ -62,47 +62,53 @@
       <div v-if="selected" class="modal-overlay" @click.self="selected = null">
         <div class="modal glass">
           <button class="close-btn" @click="selected = null">
-            <Icon icon="lucide:x" />
+            <Icon icon="lucide:x" width="20" />
           </button>
 
           <div class="modal-content">
-            <img :src="selected.image_url" class="modal-img" />
+            <img :src="selected.image_url" :alt="selected.name" class="modal-img" />
             
             <div class="modal-info">
-              <div class="modal-header-info">
-                <h3>{{ selected.name }}</h3>
-                <div class="score-pill">Match: {{ selected.score }}/10</div>
+              <div class="modal-header">
+                <div>
+                  <h3>{{ selected.name }}</h3>
+                  <span v-if="selected.sustainable || selected.inclusive" class="badges-row">
+                    <span v-if="selected.sustainable" class="badge sustainable">
+                      <Icon icon="lucide:leaf" width="12" /> Sustentável
+                    </span>
+                    <span v-if="selected.inclusive" class="badge inclusive">
+                      <Icon icon="lucide:heart-handshake" width="12" /> Inclusivo
+                    </span>
+                  </span>
+                </div>
               </div>
 
-              <div class="badges-row">
-                <span v-if="selected.sustainable" class="tag green">
-                  <Icon icon="lucide:leaf" width="12" /> Sustentável
-                </span>
-                <span v-if="selected.inclusive" class="tag purple">
-                  <Icon icon="lucide:heart-handshake" width="12" /> Inclusivo
-                </span>
-              </div>
+              <p v-if="selected.description" class="description">{{ selected.description }}</p>
 
-              <p class="description">
-                [placeholder]Este produto foi selecionado especificamente para suas necessidades.
-                Alta compatibilidade detectada.
-              </p>
+              <div class="product-details">
+                <div class="detail-row" v-if="selected.score">
+                  <span class="detail-label">Compatibilidade</span>
+                  <span class="detail-value">{{ selected.score }}/10</span>
+                </div>
+                <div class="detail-row" v-if="selected.rating">
+                  <span class="detail-label">Avaliação</span>
+                  <span class="detail-value">⭐ {{ selected.rating.toFixed(1) }}</span>
+                </div>
+                <div class="detail-row" v-if="selected.reviews_count">
+                  <span class="detail-label">Avaliações</span>
+                  <span class="detail-value">{{ selected.reviews_count }}</span>
+                </div>
+                <div class="detail-row" v-if="selected.price">
+                  <span class="detail-label">Preço</span>
+                  <span class="price">R$ {{ formatPrice(selected.price) }}</span>
+                </div>
+              </div>
 
               <div class="modal-actions">
-                <button class="btn">
-                  <Icon icon="lucide:shopping-bag" /> Adicionar à Rotina
+                <button class="btn-action">
+                  <Icon icon="lucide:shopping-bag" width="20" /> Adicionar à Rotina
                 </button>
               </div>
-
-              <section class="reviews-section">
-                <h4><Icon icon="lucide:message-circle" /> O que dizem:</h4>
-                <ul class="reviews-list">
-                  <li v-for="r in selected.reviews" :key="r.id" class="review-item">
-                    <strong>{{ r.author }}</strong>
-                    <p>{{ r.text }}</p>
-                  </li>
-                </ul>
-              </section>
             </div>
           </div>
         </div>
@@ -243,6 +249,10 @@ const recommendations = computed(() => {
 
 function open(product) {
   selected.value = product;
+}
+
+const formatPrice = (price) => {
+  return typeof price === 'number' ? price.toFixed(2).replace('.', ',') : price
 }
 </script>
 
@@ -415,41 +425,55 @@ function open(product) {
   gap: 16px;
 }
 
-/* Modal Styling (Igual ao SearchView) */
+/* Modal Styling (Unificado) */
 .modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.6);
+  background: rgba(0, 0, 0, 0.7);
   backdrop-filter: blur(8px);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 100;
+  padding: 20px;
 }
 
 .modal {
-  width: 750px;
-  max-width: 90%;
-  max-height: 90vh;
+  width: 100%;
+  max-width: 800px;
+  max-height: 85vh;
   overflow-y: auto;
   padding: 32px;
   position: relative;
   animation: modalIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  border-radius: var(--radius);
+  border: 1px solid var(--glass-border);
 }
 
 .close-btn {
   position: absolute;
   right: 20px;
   top: 20px;
-  background: none;
-  border: none;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--glass-border);
   color: var(--text);
-  font-size: 24px;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
   cursor: pointer;
   opacity: 0.7;
-  transition: 0.2s;
-  
-  &:hover { opacity: 1; transform: scale(1.1); }
+  transition: all 0.3s ease;
+
+  &:hover {
+    background: rgba(46, 163, 255, 0.15);
+    border-color: var(--color-sky);
+    color: var(--color-sky);
+    opacity: 1;
+    transform: scale(1.1);
+  }
 }
 
 .modal-content {
@@ -458,88 +482,174 @@ function open(product) {
 }
 
 .modal-img {
-  width: 280px;
-  height: 280px;
+  width: 240px;
+  height: 240px;
   object-fit: contain;
-  background: white;
-  border-radius: 16px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  flex-shrink: 0;
+  border: 1px solid var(--glass-border);
 }
 
 .modal-info {
   flex: 1;
   display: flex;
   flex-direction: column;
+  gap: 16px;
 }
 
-.modal-header-info {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 12px;
-  
-  h3 { margin: 0; font-size: 1.6rem; }
-}
-
-.score-pill {
-  background: var(--accent);
-  color: white;
-  padding: 4px 12px;
-  border-radius: 20px;
-  font-size: 0.85rem;
-  font-weight: bold;
+.modal-header {
+  h3 {
+    margin: 0 0 8px;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1.3;
+  }
 }
 
 .badges-row {
   display: flex;
   gap: 8px;
-  margin-bottom: 20px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
 }
 
-.description {
-  line-height: 1.6;
-  color: var(--text);
-  margin-bottom: 24px;
-}
+.badge {
+  font-size: 0.75rem;
+  padding: 6px 10px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border: 1px solid;
+  background: rgba(255, 255, 255, 0.05);
 
-.reviews-section {
-  margin-top: 24px;
-  padding-top: 20px;
-  border-top: 1px solid var(--glass-border);
-  
-  h4 {
-    font-size: 1rem;
-    margin-bottom: 12px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
+  &.sustainable {
+    color: #27ae60;
+    border-color: rgba(39, 174, 96, 0.3);
+    background: rgba(39, 174, 96, 0.1);
+  }
+
+  &.inclusive {
+    color: #bb86fc;
+    border-color: rgba(138, 43, 255, 0.3);
+    background: rgba(138, 43, 255, 0.1);
   }
 }
 
-.review-item {
-  background: rgba(255,255,255,0.05);
-  padding: 10px;
-  border-radius: 8px;
-  margin-bottom: 8px;
+.description {
+  color: var(--muted);
+  line-height: 1.6;
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+.product-details {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px 0;
+  border-top: 1px solid var(--glass-border);
+  border-bottom: 1px solid var(--glass-border);
+}
+
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+}
+
+.detail-label {
+  color: var(--muted);
   font-size: 0.9rem;
-  
-  strong { display: block; margin-bottom: 4px; color: var(--color-sky); }
-  p { margin: 0; color: var(--muted); font-size: 0.85rem; }
+  font-weight: 500;
+}
+
+.detail-value {
+  color: var(--text);
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.price {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: var(--color-sky);
+  text-shadow: 0 0 12px rgba(46, 163, 255, 0.2);
+}
+
+.modal-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: auto;
+  width: 100%;
+}
+
+.btn-action {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 16px;
+  background: var(--panel-bg);
+  border: 1px solid var(--glass-border);
+  color: var(--text);
+  border-radius: 10px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.2, 0.9, 0.3, 1);
+  gap: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+
+  &:hover {
+    background: var(--glass-bg);
+    border-color: var(--color-sky);
+    color: var(--color-sky);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(46, 163, 255, 0.15);
+  }
+
+  &:active {
+    transform: translateY(-1px);
+  }
 }
 
 @keyframes modalIn {
-  from { opacity: 0; transform: scale(0.95) translateY(20px); }
-  to { opacity: 1; transform: scale(1) translateY(0); }
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
 }
 
 /* Animations */
-.fade-enter-active, .fade-leave-active { transition: opacity 0.3s; }
-.fade-enter-from, .fade-leave-to { opacity: 0; }
+.fade-enter-active, .fade-leave-active {
+  transition: opacity 0.3s;
+}
+
+.fade-enter-from, .fade-leave-to {
+  opacity: 0;
+}
 
 /* Responsive */
 @media (max-width: 900px) {
   .layout-grid {
     grid-template-columns: 240px 1fr;
+  }
+
+  .modal {
+    max-width: 90%;
+    padding: 28px;
   }
 }
 
@@ -574,14 +684,28 @@ function open(product) {
     justify-content: space-around;
   }
 
+  .modal {
+    max-width: 95%;
+    padding: 24px;
+    max-height: 90vh;
+  }
+
   .modal-content {
     flex-direction: column;
+    gap: 20px;
   }
   
   .modal-img {
     width: 100%;
-    height: 200px;
-    object-fit: cover;
+    height: 220px;
+    object-fit: contain;
+  }
+
+  .close-btn {
+    width: 36px;
+    height: 36px;
+    right: 16px;
+    top: 16px;
   }
 }
 
@@ -597,6 +721,46 @@ function open(product) {
   .filter-group {
     flex-direction: column;
     align-items: stretch;
+  }
+
+  .modal {
+    padding: 20px;
+    max-height: 95vh;
+  }
+
+  .modal-content {
+    gap: 16px;
+  }
+
+  .modal-img {
+    height: 180px;
+  }
+
+  .close-btn {
+    right: 12px;
+    top: 12px;
+  }
+
+  .modal-info {
+    h3 {
+      font-size: 1.3rem;
+    }
+  }
+
+  .description {
+    font-size: 0.9rem;
+  }
+
+  .price {
+    font-size: 1.3rem;
+  }
+
+  .modal-actions {
+    .btn-action {
+      padding: 11px 12px;
+      font-size: 0.85rem;
+      gap: 6px;
+    }
   }
 }
 </style>

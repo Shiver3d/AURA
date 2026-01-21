@@ -86,7 +86,7 @@ const emit = defineEmits(['select'])
 
 <style scoped lang="scss">
 .product-card {
-  padding: 12px;
+  padding: 16px;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.2, 0.9, 0.3, 1);
   position: relative;
@@ -99,24 +99,24 @@ const emit = defineEmits(['select'])
   border: 1px solid var(--glass-border);
 
   &:hover {
-    transform: translateY(-8px);
-    box-shadow: var(--txt-hover);
+    transform: translateY(-6px);
+    box-shadow: 0 12px 24px rgba(46, 163, 255, 0.15);
     border-color: var(--color-sky);
     background: var(--glass-bg);
 
     .product-image {
-      transform: scale(1.08);
+      transform: scale(1.05);
     }
   }
 }
 
 .image-wrapper {
   position: relative;
-  border-radius: 12px;
+  border-radius: 10px;
   overflow: hidden;
   margin-bottom: 16px;
   aspect-ratio: 4 / 3;
-  background: rgba(0, 0, 0, 0.2);
+  background: rgba(0, 0, 0, 0.05);
 }
 
 .product-image {
@@ -130,36 +130,37 @@ const emit = defineEmits(['select'])
   position: absolute;
   top: 10px;
   right: 10px;
-  background: linear-gradient(135deg, var(--color-sky), #1a7fe0);
-  color: var(--bg);
-  padding: 5px 12px;
-  border-radius: 18px;
+  background: var(--accent-solid);
+  color: var(--color-sky);
+  padding: 6px 12px;
+  border-radius: 8px;
   font-size: 0.7rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.5px;
   backdrop-filter: blur(4px);
-  box-shadow: 0 4px 12px rgba(0, 229, 255, 0.3);
+  border: 1px solid rgba(46, 163, 255, 0.2);
+  box-shadow: 0 4px 12px rgba(46, 163, 255, 0.1);
 }
 
 .score-badge {
   position: absolute;
   bottom: 10px;
   left: 10px;
-  background: rgba(0, 0, 0, 0.75);
+  background: rgba(255, 215, 0, 0.15);
   color: #ffd700;
   padding: 6px 10px;
-  border-radius: 10px;
+  border-radius: 8px;
   font-size: 0.8rem;
   font-weight: 700;
   backdrop-filter: blur(4px);
-  border: 1px solid rgba(255, 215, 0, 0.4);
+  border: 1px solid rgba(255, 215, 0, 0.3);
 }
 
 .card-content {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 12px;
   flex: 1;
 }
 
@@ -177,7 +178,7 @@ const emit = defineEmits(['select'])
 
 .product-description {
   margin: 0;
-  font-size: 0.8rem;
+  font-size: 0.85rem;
   color: var(--muted);
   line-height: 1.4;
   display: -webkit-box;
@@ -192,7 +193,7 @@ const emit = defineEmits(['select'])
   align-items: center;
   font-size: 0.75rem;
   color: var(--muted);
-  padding: 8px 0;
+  padding: 10px 0;
   border-top: 1px solid var(--glass-border);
   border-bottom: 1px solid var(--glass-border);
 }
@@ -205,15 +206,15 @@ const emit = defineEmits(['select'])
 .tags {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
+  gap: 8px;
   min-height: 24px;
 }
 
 .tag {
   font-size: 0.65rem;
-  padding: 4px 8px;
+  padding: 5px 10px;
   border-radius: 6px;
-  background: var(--glass-bg);
+  background: rgba(255, 255, 255, 0.05);
   border: 1px solid var(--glass-border);
   display: flex;
   align-items: center;
@@ -229,27 +230,27 @@ const emit = defineEmits(['select'])
   }
 
   &.green {
-    background: var(--color-green);
+    background: rgba(39, 174, 96, 0.1);
     color: #27ae60;
     border: 1px solid rgba(39, 174, 96, 0.3);
 
     &:hover {
-      background: rgba(39, 174, 96, 0.25);
+      background: rgba(39, 174, 96, 0.2);
     }
   }
 
   &.blue {
-    background: rgba(0, 229, 255, 0.12);
+    background: rgba(46, 163, 255, 0.1);
     color: var(--color-sky);
-    border: 1px solid rgba(0, 229, 255, 0.25);
+    border: 1px solid rgba(46, 163, 255, 0.25);
 
     &:hover {
-      background: rgba(0, 229, 255, 0.18);
+      background: rgba(46, 163, 255, 0.18);
     }
   }
 
   &.purple {
-    background: rgba(138, 43, 255, 0.12);
+    background: rgba(138, 43, 255, 0.1);
     color: #bb86fc;
     border: 1px solid rgba(138, 43, 255, 0.3);
 
@@ -264,30 +265,76 @@ const emit = defineEmits(['select'])
   align-items: center;
   justify-content: flex-start;
   margin-top: auto;
-  padding-top: 10px;
+  padding-top: 12px;
   border-top: 1px solid var(--glass-border);
 }
 
 .price {
-  font-size: 1.25rem;
+  font-size: 1.3rem;
   font-weight: 800;
   color: var(--color-sky);
-  text-shadow: var(--txt-hover);
+  text-shadow: 0 0 12px rgba(46, 163, 255, 0.15);
   letter-spacing: -0.5px;
 }
 
 /* Mobile Responsiveness */
 @media (max-width: 640px) {
   .product-card {
-    padding: 10px;
+    padding: 12px;
 
     &:hover {
-      transform: translateY(-6px);
+      transform: translateY(-4px);
     }
   }
 
   .image-wrapper {
     margin-bottom: 12px;
+  }
+
+  .product-name {
+    font-size: 1rem;
+  }
+
+  .product-description {
+    font-size: 0.8rem;
+  }
+
+  .tags {
+    gap: 6px;
+  }
+
+  .tag {
+    font-size: 0.6rem;
+    padding: 4px 8px;
+  }
+
+  .price {
+    font-size: 1.15rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .product-card {
+    padding: 10px;
+  }
+
+  .image-wrapper {
+    margin-bottom: 10px;
+    aspect-ratio: 1 / 1;
+  }
+
+  .category-badge {
+    top: 8px;
+    right: 8px;
+    padding: 5px 10px;
+    font-size: 0.65rem;
+  }
+
+  .score-badge {
+    bottom: 8px;
+    left: 8px;
+    padding: 5px 8px;
+    font-size: 0.75rem;
   }
 
   .product-name {
@@ -299,53 +346,11 @@ const emit = defineEmits(['select'])
   }
 
   .tags {
-    gap: 4px;
-  }
-
-  .tag {
-    font-size: 0.6rem;
-    padding: 3px 6px;
+    gap: 5px;
   }
 
   .price {
     font-size: 1.1rem;
-  }
-}
-
-@media (max-width: 480px) {
-  .product-card {
-    padding: 8px;
-  }
-
-  .image-wrapper {
-    margin-bottom: 10px;
-    aspect-ratio: 1 / 1;
-  }
-
-  .category-badge {
-    top: 6px;
-    right: 6px;
-    padding: 4px 8px;
-    font-size: 0.65rem;
-  }
-
-  .score-badge {
-    bottom: 6px;
-    left: 6px;
-    padding: 4px 8px;
-    font-size: 0.7rem;
-  }
-
-  .product-name {
-    font-size: 0.9rem;
-  }
-
-  .tags {
-    gap: 3px;
-  }
-
-  .price {
-    font-size: 1rem;
   }
 }
 </style>

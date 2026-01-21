@@ -31,12 +31,6 @@ const hideFooter = ref(false);
 let lastScrollY = 0;
 
 const handleScroll = () => {
-  // Só aplica hide/show em AI-Analysis
-  if (route.name !== "ai-analysis") {
-    hideFooter.value = false;
-    return;
-  }
-
   const scrollY = window.scrollY;
   
   // Se scrollou pra baixo mais de 100px e está descendo, esconde
@@ -70,14 +64,11 @@ onUnmounted(() => {
   display: flex;
   justify-content: center;
   z-index: 30;
-  transition: transform 0.4s cubic-bezier(0.2, 0.9, 0.3, 1), 
-              opacity 0.4s ease;
+  transition: opacity 0.3s ease;
   opacity: 1;
-  transform: translateY(0);
 }
 
 .footer.hidden {
-  transform: translateY(120px);
   opacity: 0;
   pointer-events: none;
 }
