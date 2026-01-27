@@ -36,11 +36,12 @@
         </label>
         <label class="field">
           <span>Senha</span>
-          <input
+          <!-- Componente reutilizável de input de senha com validação -->
+          <PasswordInput
             v-model="password"
-            type="password"
-            required
-            placeholder="Sua senha, sua confidência."
+            :show-validation="isSignup"
+            placeholder="Mínimo 8 caracteres, 1 número, 1 caractere especial"
+            @validation-change="handlePasswordValidation"
           />
         </label>
         
@@ -53,7 +54,7 @@
         </label>
 
         <div class="actions">
-          <button class="btn" type="submit" :disabled="loading">
+          <button class="btn" type="submit" :disabled="loading || (isSignup && !isPasswordValid)">
             {{ isSignup ? "Criar conta" : "Entrar" }}
           </button>
         </div>
@@ -93,10 +94,17 @@
       <div class="modal-card">
         <h3>Recuperar senha</h3>
         <p>Insira seu e-mail para receber instruções de recuperação.</p>
-        <input v-model="recoveryEmail" type="email" placeholder="seuemail@exemplo.com" />
+        <div class="form-group">
+          <input 
+            v-model="recoveryEmail" 
+            type="email" 
+            placeholder="seuemail@exemplo.com"
+            class="recovery-input"
+          />
+        </div>
         <div class="modal-actions">
+          <button class="btn btn-secondary" @click="closeRecovery">Cancelar</button>
           <button class="btn" @click="sendRecovery">Enviar</button>
-          <button class="btn" @click="closeRecovery">Cancelar</button>
         </div>
       </div>
     </div>
@@ -109,6 +117,7 @@ import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import { toast } from "vue-sonner";
 import { useAuth } from "../composables";
+import PasswordInput from "../components/PasswordInput.vue";
 
 const name = ref("");
 const email = ref("");
@@ -116,6 +125,7 @@ const password = ref("");
 const isSignup = ref(false);
 const loading = ref(false);
 const rememberMe = ref(false);
+const isPasswordValid = ref(false);
 
 const showPopup = ref(false);
 const popupMessage = ref("");
@@ -142,6 +152,15 @@ function toggleMode() {
   isSignup.value = !isSignup.value;
   // Resetar checkbox ao alternar modo
   rememberMe.value = false;
+  isPasswordValid.value = false;
+}
+
+/**
+ * Handle da validação de senha do componente PasswordInput
+ * Usado para desabilitar/habilitar o botão de submit em modo signup
+ */
+function handlePasswordValidation(isValid) {
+  isPasswordValid.value = isValid;
 }
 
 function openRecovery() {
@@ -162,20 +181,6 @@ function sanitizeName() {
   name.value = name.value.replace(/[0-9!@#$%^&*(),.?":{}|<>/\\]/g, '');
 }
 
-function validatePassword(pw) {
-  if (!pw || pw.length < 8) {
-    popupMessage.value = "A senha deve ter pelo menos 8 caracteres.";
-    return false;
-  }
-  const hasNumber = /\d/.test(pw);
-  const hasSpecial = /[!@#$%^&*(),.?":{}|<>]/.test(pw);
-  if (!hasNumber || !hasSpecial) {
-    popupMessage.value = "A senha deve conter ao menos um número e um caractere especial.";
-    return false;
-  }
-  return true;
-}
-
 async function sendRecovery() {
   // Placeholder: show toast and close modal. Integrar com supabase se desejar.
   if (!recoveryEmail.value) {
@@ -190,9 +195,10 @@ async function submit() {
   loading.value = true;
   try {
     if (isSignup.value) {
-      // validar senha localmente antes de criar
-      if (!validatePassword(password.value)) {
-        showPopup.value = true;
+      // Validação de senha já é feita pelo PasswordInput component
+      // Só prosseguir se a senha for válida
+      if (!isPasswordValid.value) {
+        toast.error("Senha não atende aos requisitos mínimos.");
         loading.value = false;
         return;
       }
@@ -283,18 +289,25 @@ async function submit() {
 }
 .field input {
   width: 100%;
-  padding: 10px 12px;
-  border-radius: 10px;
-  border: 1px solid var(--glass-border);
-  background: var(--panel-bg);
+  padding: 12px 12px;
+  border-radius: 8px;
+  border: 2px solid var(--glass-border);
+  background: var(--glass-bg);
   color: var(--text);
   font-family: inherit;
-  transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+  font-size: 0.95rem;
+  transition: all 0.3s ease;
 }
+
+.field input::placeholder {
+  color: var(--muted);
+}
+
 .field input:focus {
   outline: none;
-  border-color: var(--accent-solid);
-  box-shadow: 0 0 12px var(--accent-solid);
+  border-color: var(--color-sky);
+  box-shadow: 0 0 12px rgba(46, 163, 255, 0.2);
+  background: rgba(255, 255, 255, 0.5);
 }
 
 /* Remember Me Checkbox */
@@ -451,15 +464,63 @@ async function submit() {
   padding: 18px;
   border-radius: 12px;
   box-shadow: 0 8px 30px rgba(2,6,23,0.16);
+
+  h3 {
+    margin: 0 0 12px;
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  p {
+    margin: 0 0 16px;
+    color: var(--muted);
+    font-size: 0.95rem;
+  }
 }
-.modal-card h3 {
-  margin: 0 0 8px;
+
+.form-group {
+  margin-bottom: 16px;
 }
+
+.recovery-input {
+  width: 100%;
+  padding: 12px 12px;
+  border-radius: 8px;
+  border: 2px solid var(--glass-border);
+  background: var(--glass-bg);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 0.95rem;
+  transition: all 0.3s ease;
+}
+
+.recovery-input::placeholder {
+  color: var(--muted);
+}
+
+.recovery-input:focus {
+  outline: none;
+  border-color: var(--color-sky);
+  box-shadow: 0 0 12px rgba(46, 163, 255, 0.2);
+  background: rgba(255, 255, 255, 0.5);
+}
+
 .modal-actions {
   display: flex;
   gap: 8px;
   justify-content: flex-end;
   margin-top: 12px;
+}
+
+.btn-secondary {
+  background: var(--panel-bg) !important;
+  border: 2px solid var(--glass-border) !important;
+  color: var(--text) !important;
+
+  &:hover {
+    border-color: var(--muted) !important;
+    background: var(--glass-bg) !important;
+  }
 }
 
 /* Transitions - Fade suave como UserView */

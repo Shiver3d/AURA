@@ -48,6 +48,25 @@
                 <div>
                   <h3>{{ selected.name }}</h3>
                   <span v-if="selected.category" class="category-badge">{{ formatCategory(selected.category) }}</span>
+                  
+                  <!-- Tags do produto -->
+                  <div v-if="hasTags" class="tags-row">
+                    <span v-if="selected.rating > 4.5" class="tag green">
+                      <Icon icon="lucide:star" width="12" /> Bem avaliado
+                    </span>
+                    <span v-if="selected.category === 'skincare'" class="tag blue">
+                      <Icon icon="lucide:droplets" width="12" /> Cuidados
+                    </span>
+                    <span v-if="selected.category === 'makeup'" class="tag purple">
+                      <Icon icon="lucide:palette" width="12" /> Maquiagem
+                    </span>
+                    <span v-if="selected.sustainable" class="tag sustainable">
+                      <Icon icon="lucide:leaf" width="12" /> Sustentável
+                    </span>
+                    <span v-if="selected.inclusive" class="tag inclusive">
+                      <Icon icon="lucide:heart-handshake" width="12" /> Inclusivo
+                    </span>
+                  </div>
                 </div>
               </div>
               
@@ -83,7 +102,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, watch } from "vue";
+import { ref, onMounted, watch, computed } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { supabase } from "../services/supabase";
 import { useAuth } from "../composables/useAuth";
@@ -162,6 +181,15 @@ function onMobileSearch() {
     router.push(`/search?q=${encodeURIComponent(query)}`);
   }
 }
+
+// Verifica se há tags para exibir
+const hasTags = computed(() => {
+  if (!selected.value) return false;
+  return selected.value.rating > 4.5 || 
+         selected.value.category || 
+         selected.value.sustainable || 
+         selected.value.inclusive;
+});
 
 // Observa mudanças na URL (quando o usuário pesquisa algo novo no Header)
 watch(() => route.query.q, () => {
@@ -312,16 +340,100 @@ onMounted(() => {
 
 .category-badge {
   display: inline-block;
-  background: var(--accent-solid);
-  color: var(--color-sky);
+  background: rgba(255, 255, 255, 0.2);
+  color: var(--text);
   padding: 6px 12px;
   border-radius: 8px;
   font-size: 0.75rem;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  border: 1px solid rgba(46, 163, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.3);
   width: fit-content;
+  backdrop-filter: blur(8px);
+  margin-bottom: 12px;
+}
+
+[data-theme="dark"] .category-badge {
+  background: rgba(0, 0, 0, 0.3);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.tags-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.tag {
+  font-size: 0.65rem;
+  padding: 5px 10px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.15);
+  border: 1.5px solid var(--glass-border);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-weight: 600;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+  color: var(--text);
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.25);
+    border-color: var(--color-sky);
+  }
+
+  &.green {
+    background: rgba(39, 174, 96, 0.25);
+    color: #1a5f3a;
+    border: 1.5px solid rgba(39, 174, 96, 0.6);
+
+    &:hover {
+      background: rgba(39, 174, 96, 0.35);
+    }
+  }
+
+  &.blue {
+    background: rgba(46, 163, 255, 0.2);
+    color: #0066cc;
+    border: 1.5px solid rgba(46, 163, 255, 0.5);
+
+    &:hover {
+      background: rgba(46, 163, 255, 0.3);
+    }
+  }
+
+  &.purple {
+    background: rgba(138, 43, 255, 0.2);
+    color: #5a0088;
+    border: 1.5px solid rgba(138, 43, 255, 0.5);
+
+    &:hover {
+      background: rgba(138, 43, 255, 0.3);
+    }
+  }
+
+  &.sustainable {
+    background: rgba(39, 174, 96, 0.25);
+    color: #1a5f3a;
+    border: 1.5px solid rgba(39, 174, 96, 0.6);
+
+    &:hover {
+      background: rgba(39, 174, 96, 0.35);
+    }
+  }
+
+  &.inclusive {
+    background: rgba(138, 43, 255, 0.2);
+    color: #5a0088;
+    border: 1.5px solid rgba(138, 43, 255, 0.5);
+
+    &:hover {
+      background: rgba(138, 43, 255, 0.3);
+    }
+  }
 }
 
 .description {
@@ -386,7 +498,7 @@ onMounted(() => {
   font-size: 0.95rem;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.2, 0.9, 0.3, 1);
+  transition: background 0.3s ease, border-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
   gap: 10px;
   text-transform: uppercase;
   letter-spacing: 0.5px;
@@ -395,23 +507,20 @@ onMounted(() => {
     background: var(--glass-bg);
     border-color: var(--color-sky);
     color: var(--color-sky);
-    transform: translateY(-3px);
-    box-shadow: 0 8px 20px rgba(46, 163, 255, 0.15);
+    box-shadow: 0 8px 16px rgba(46, 163, 255, 0.1);
   }
 
   &:active {
-    transform: translateY(-1px);
+    opacity: 0.9;
   }
 }
 
 @keyframes modalIn {
   from {
     opacity: 0;
-    transform: scale(0.95) translateY(20px);
   }
   to {
     opacity: 1;
-    transform: scale(1) translateY(0);
   }
 }
 

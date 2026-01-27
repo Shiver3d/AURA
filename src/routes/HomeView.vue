@@ -125,6 +125,8 @@ onMounted(async () => {
   margin: 19px;
   padding: 0 12px;
   gap: 8px;
+  border: 2px solid var(--color-sky);
+  background: var(--panel-bg) !important;
 }
 
 .hero {
@@ -187,7 +189,7 @@ onMounted(async () => {
   }
 }
 .float-fallback {
-  animation: floaty 3000ms ease-in-out infinite;
+  animation: none;
 }
 .delay-0 {
   animation-delay: 0s;
@@ -197,6 +199,14 @@ onMounted(async () => {
 }
 .delay-2 {
   animation-delay: 0.4s;
+}
+
+.card {
+  transition: transform 0.3s cubic-bezier(0.2, 0.9, 0.3, 1);
+}
+
+.card:hover {
+  transform: translateY(-6px);
 }
 
 .card p {

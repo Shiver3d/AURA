@@ -123,8 +123,12 @@ import { Icon } from "@iconify/vue";
 import ProductCard from "./ProductCard.vue";
 import { useAuth } from "../../composables";
 import { supabase } from "../../services/supabase";
+import { getAllProducts } from "../../services/products";
 
 const { user } = useAuth();
+
+// Cache de produtos para mapear imagens
+const allProducts = ref([]);
 
 const profile = ref({
   full_name: "",
@@ -137,6 +141,19 @@ const firstName = computed(() => {
                    "Visitante";
   return fullName.split(" ")[0];
 });
+
+/**
+ * Função helper para encontrar imagem de produto real baseado no nome
+ * Busca por correspondência no banco de dados de produtos reais
+ */
+function getProductImage(productName) {
+  if (!productName || !allProducts.value.length) return null;
+  
+  const found = allProducts.value.find(p => 
+    p.name && p.name.toLowerCase() === productName.toLowerCase()
+  );
+  return found?.image_url || null;
+}
 
 // Simulação de dados com imagens placeholders para visual
 const catalog = ref([
@@ -215,7 +232,7 @@ const catalog = ref([
 const filters = ref({ sustainable: true, inclusive: true });
 const selected = ref(null);
 
-// Carregar dados do usuário do Supabase
+// Carregar dados do usuário do Supabase e produtos para mapear imagens
 async function loadUserDataFromDatabase() {
   if (!user.value) return;
   
@@ -234,9 +251,32 @@ async function loadUserDataFromDatabase() {
   }
 }
 
+// Carregar todos os produtos para mapear imagens dos recomendados
+async function loadProductsForImageMapping() {
+  try {
+    const products = await getAllProducts();
+    allProducts.value = products;
+    
+    // Atualizar imagens dos produtos no catálogo com base nos produtos reais
+    catalog.value = catalog.value.map(catalogItem => {
+      const imageUrl = getProductImage(catalogItem.name);
+      if (imageUrl) {
+        return {
+          ...catalogItem,
+          image_url: imageUrl
+        };
+      }
+      return catalogItem;
+    });
+  } catch (err) {
+    console.log("Erro ao carregar produtos para mapear imagens:", err.message);
+  }
+}
+
 onMounted(() => {
   if (user.value) {
     loadUserDataFromDatabase();
+    loadProductsForImageMapping();
   }
 });
 
@@ -448,6 +488,11 @@ const formatPrice = (price) => {
   animation: modalIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
   border-radius: var(--radius);
   border: 1px solid var(--glass-border);
+  // Melhor contraste em light mode
+  [data-theme="light"] & {
+    background: rgba(248, 251, 255, 0.95);
+    border: 1px solid rgba(46, 163, 255, 0.3);
+  }
 }
 
 .close-btn {
@@ -472,7 +517,6 @@ const formatPrice = (price) => {
     border-color: var(--color-sky);
     color: var(--color-sky);
     opacity: 1;
-    transform: scale(1.1);
   }
 }
 
@@ -538,6 +582,30 @@ const formatPrice = (price) => {
     color: #bb86fc;
     border-color: rgba(138, 43, 255, 0.3);
     background: rgba(138, 43, 255, 0.1);
+  }
+
+  // Tag de cuidado - cores fixas preto e branco para máxima legibilidade em light/dark mode
+  &.caution {
+    color: #333333;
+    border-color: #666666;
+    background: #e8e8e8;
+  }
+
+  // Suporte para dark mode
+  @media (prefers-color-scheme: dark) {
+    &.caution {
+      color: #f0f0f0;
+      border-color: #999999;
+      background: #333333;
+    }
+  }
+
+  [data-theme="dark"] & {
+    &.caution {
+      color: #f0f0f0;
+      border-color: #999999;
+      background: #333333;
+    }
   }
 }
 
@@ -612,23 +680,33 @@ const formatPrice = (price) => {
     background: var(--glass-bg);
     border-color: var(--color-sky);
     color: var(--color-sky);
-    transform: translateY(-3px);
-    box-shadow: 0 8px 20px rgba(46, 163, 255, 0.15);
+    box-shadow: 0 8px 16px rgba(46, 163, 255, 0.1);
   }
 
   &:active {
-    transform: translateY(-1px);
+    opacity: 0.9;
+  }
+
+  // Melhor contraste em light mode
+  [data-theme="light"] & {
+    background: rgba(255, 255, 255, 0.8);
+    border: 2px solid rgba(46, 163, 255, 0.4);
+    color: #0066cc;
+  }
+
+  [data-theme="light"] &:hover {
+    background: rgba(46, 163, 255, 0.15);
+    border-color: #0066cc;
+    color: #0066cc;
   }
 }
 
 @keyframes modalIn {
   from {
     opacity: 0;
-    transform: scale(0.95) translateY(20px);
   }
   to {
     opacity: 1;
-    transform: scale(1) translateY(0);
   }
 }
 

@@ -2,7 +2,7 @@
   <div class="contact-root container">
     <header class="page-header glass">
       <h1>Entre em Contato</h1>
-      <p>Tenho um bug para reportar? Uma sugestão de feature? Ou só quer dizer oi?</p>
+      <p>Tem um bug para reportar? Uma sugestão de feature? Ou só quer dizer oi?</p>
     </header>
 
     <main class="contact-content">
@@ -274,8 +274,8 @@ ${form.value.message}
   select,
   textarea {
     padding: 12px 16px;
-    background: var(--panel-bg);
-    border: 1px solid var(--glass-border);
+    background: var(--glass-bg);
+    border: 2px solid var(--glass-border);
     border-radius: 8px;
     color: var(--text);
     font-family: inherit;
@@ -289,8 +289,8 @@ ${form.value.message}
     &:focus {
       outline: none;
       border-color: var(--color-sky);
-      box-shadow: 0 0 0 3px rgba(0, 229, 255, 0.1);
-      background: var(--glass-bg);
+      box-shadow: 0 0 0 3px rgba(46, 163, 255, 0.2);
+      background: rgba(255,255,255,0.5);
     }
 
     &:hover:not(:focus) {
@@ -307,6 +307,16 @@ ${form.value.message}
 
   select {
     cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23333333' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    padding-right: 32px;
+  }
+
+  select option {
+    background: var(--bg);
+    color: var(--text);
   }
 }
 
@@ -538,7 +548,7 @@ ${form.value.message}
 
 .faq-items {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  grid-template-columns: repeat(2, 1fr);
   gap: 20px;
 }
 

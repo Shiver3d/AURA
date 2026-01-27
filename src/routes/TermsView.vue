@@ -94,27 +94,22 @@
       </section>
 
       <section class="info-section glass">
-        <h2>Segurança Técnica</h2>
+        <h2>Segurança</h2>
         <div class="security-grid">
           <div class="security-item">
             <Icon icon="lucide:lock" />
             <h3>Criptografia</h3>
-            <p>Todas as comunicações são criptografadas com SSL/TLS. Dados sensíveis são hasheados.</p>
+            <p>Seus dados são criptografados com SSL/TLS, o padrão de segurança da internet.</p>
           </div>
           <div class="security-item">
             <Icon icon="lucide:shield" />
-            <h3>Autenticação</h3>
-            <p>Supabase gerencia autenticação com segurança de nível enterprise.</p>
-          </div>
-          <div class="security-item">
-            <Icon icon="lucide:database" />
-            <h3>Banco de Dados</h3>
-            <p>PostgreSQL com políticas RLS (Row Level Security) para acesso granular.</p>
+            <h3>Autenticação Segura</h3>
+            <p>Sua conta é protegida com senhas criptografadas e autenticação segura.</p>
           </div>
           <div class="security-item">
             <Icon icon="lucide:alert-circle" />
-            <h3>Incidentes</h3>
-            <p>Se ocorrer violação, você será notificado em 24 horas.</p>
+            <h3>Privacidade</h3>
+            <p>Seus dados são privados e nunca são compartilhados sem sua autorização.</p>
           </div>
         </div>
       </section>

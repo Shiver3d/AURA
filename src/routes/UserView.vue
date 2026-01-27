@@ -161,15 +161,18 @@
 
                 <div class="form-group">
                   <label>Nova Senha</label>
-                  <input
+                  <!-- Componente reutilizável de input de senha com validação -->
+                  <PasswordInput
                     v-model="security.password"
-                    type="password"
-                    placeholder="Mínimo 6 caracteres"
+                    show-validation
+                    placeholder="Mínimo 8 caracteres, 1 número, 1 caractere especial"
+                    @validation-change="passwordValidation.isValid = $event"
                   />
+                  
                   <button
                     @click="updatePassword"
                     class="btn-ghost"
-                    :disabled="loading"
+                    :disabled="loading || !passwordValidation.isValid"
                   >
                     Atualizar Senha
                   </button>
@@ -271,6 +274,7 @@
 import { ref, computed, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import { Icon } from "@iconify/vue";
+import PasswordInput from "../components/PasswordInput.vue";
 import { useAuth } from "../composables/useAuth";
 import { supabase } from "../services/supabase";
 import { toast } from "vue-sonner";
@@ -308,6 +312,16 @@ const security = ref({
   email: "",
   password: "",
 });
+
+// Estado para validação de senha
+const passwordValidation = ref({
+  hasMinLength: false,
+  hasNumber: false,
+  hasSpecial: false,
+  isValid: false,
+});
+
+const showPasswordFeedback = ref(false);
 
 // --- COMPUTED ---
 const firstName = computed(() => {
@@ -494,17 +508,27 @@ const updateEmail = async () => {
 };
 
 const updatePassword = async () => {
-  if (!security.value.password) return;
+  if (!security.value.password) {
+    toast.error("Por favor, insira uma nova senha");
+    return;
+  }
+  
+  if (!passwordValidation.value.isValid) {
+    toast.error("Senha não atende aos requisitos mínimos");
+    return;
+  }
+  
   loading.value = true;
   try {
     const { error } = await supabase.auth.updateUser({
       password: security.value.password,
     });
     if (error) throw error;
-    alert("Senha alterada com sucesso!");
+    toast.success("Senha alterada com sucesso!");
     security.value.password = "";
+    passwordValidation.value.isValid = false;
   } catch (err) {
-    alert(err.message);
+    toast.error(err.message || "Erro ao atualizar senha");
   } finally {
     loading.value = false;
   }
@@ -710,15 +734,17 @@ onMounted(() => { loadData(); });
   align-items: center;
   gap: 10px;
   padding: 12px;
-  background: rgba(255, 58, 48, 0.068);
+  background: rgba(255, 58, 48, 0.1);
   color: #ff3b30;
-  border: 1px solid rgba(255, 59, 48, 0.2);
+  border: 2px solid rgba(255, 59, 48, 0.4);
   border-radius: 12px;
   cursor: pointer;
+  font-weight: 600;
   transition: 0.3s;
 
   &:hover {
     background: rgba(255, 59, 48, 0.2);
+    border-color: rgba(255, 59, 48, 0.6);
   }
 }
 
@@ -828,29 +854,40 @@ onMounted(() => { loadData(); });
     width: 100%;
     padding: 12px;
     border-radius: 8px;
-    border: 1 0px var(--glass);
-    background: var(--panel-bg);
+    border: 2px solid var(--glass-border);
+    background: var(--glass-bg);
     color: var(--text);
     font-family: inherit;
+    transition: all 0.3s ease;
 
     &:focus {
       outline: none;
-      border-color: var(--accent);
-      box-shadow: 0 0 10px rgba(0, 229, 255, 0.2);
+      border-color: var(--color-sky);
+      box-shadow: 0 0 10px rgba(46, 163, 255, 0.2);
+      background: rgba(255,255,255,0.5);
+    }
+
+    &::placeholder {
+      color: var(--muted);
     }
   }
 }
 
 .btn-ghost {
   margin-top: 16px;
-  background: var(--btn-bg-ghost);
+  background: var(--glass-bg);
+  border: 2px solid var(--glass-border);
   padding: 8px 16px;
   border-radius: 6px;
   cursor: pointer;
   font-size: 0.8rem;
+  color: var(--text);
+  font-weight: 600;
+  transition: all 0.3s ease;
 
   &:hover {
-    background: var(--accent-solid);
+    border-color: var(--color-sky);
+    background: rgba(255,255,255,0.15);
   }
 }
 
@@ -913,14 +950,16 @@ onMounted(() => { loadData(); });
 
   .btn-cancel {
     padding: 10px 16px;
-    background: var(--panel-bg);
-    border: 1px solid var(--glass-border);
+    background: var(--glass-bg);
+    border: 2px solid var(--glass-border);
     color: var(--text);
     border-radius: 8px;
     cursor: pointer;
     transition: 0.3s ease;
+    font-weight: 600;
     &:hover {
-      background: rgba(255, 255, 255, 0.1);
+      border-color: var(--color-sky);
+      background: rgba(255, 255, 255, 0.15);
     }
   }
 
@@ -928,7 +967,7 @@ onMounted(() => { loadData(); });
     padding: 10px 16px;
     background: linear-gradient(90deg, #ff4757, #d63031);
     color: white;
-    border: none;
+    border: 2px solid transparent;
     border-radius: 8px;
     cursor: pointer;
     font-weight: 600;
@@ -938,6 +977,7 @@ onMounted(() => { loadData(); });
     &:hover {
       transform: translateY(-1px);
       box-shadow: 0 6px 16px rgba(255, 71, 87, 0.4);
+      border-color: rgba(255, 255, 255, 0.3);
     }
   }
 }
@@ -952,6 +992,49 @@ onMounted(() => { loadData(); });
   }
 }
 
+/* Password Validation Feedback */
+.password-input {
+  transition: all 0.3s ease;
+  
+  &.password-valid {
+    border-color: #27ae60 !important;
+    background: rgba(39, 174, 96, 0.05) !important;
+  }
+  
+  &.password-invalid {
+    border-color: #e74c3c !important;
+    background: rgba(231, 76, 60, 0.05) !important;
+  }
+}
+
+.password-feedback {
+  margin-top: 8px;
+  padding: 12px;
+  background: rgba(0, 0, 0, 0.04);
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 0.85rem;
+}
+
+.requirement {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--muted);
+  transition: color 0.2s ease;
+  
+  svg {
+    flex-shrink: 0;
+  }
+  
+  &.met {
+    color: #27ae60;
+    font-weight: 500;
+  }
+}
+
 .theme-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
@@ -962,8 +1045,8 @@ onMounted(() => { loadData(); });
   position: relative;
   padding: 16px 12px;
   border-radius: 12px;
-  border: 2px solid rgba(255, 255, 255, 0.1);
-  background: rgba(255, 255, 255, 0.05);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.1);
   color: var(--text);
   cursor: pointer;
   transition: all 0.3s ease;
@@ -989,15 +1072,15 @@ onMounted(() => { loadData(); });
   }
 
   &:hover {
-    border-color: var(--accent-solid);
-    background: rgba(255, 255, 255, 0.1);
+    border-color: var(--color-sky);
+    background: rgba(255, 255, 255, 0.18);
     transform: translateY(-2px);
   }
 
   &.active {
-    border-color: var(--accent);
-    background: var(--accent-solid);
-    box-shadow: 0 8px 24px rgba(2, 6, 23, 0.2);
+    border-color: var(--color-sky);
+    background: rgba(46, 163, 255, 0.15);
+    box-shadow: 0 8px 24px rgba(46, 163, 255, 0.15);
   }
 }
 
