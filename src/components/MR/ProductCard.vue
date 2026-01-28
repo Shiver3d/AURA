@@ -106,7 +106,7 @@ const emit = defineEmits(['select'])
 
   &:hover {
     border-color: var(--color-sky);
-    box-shadow: 0 8px 16px rgba(46, 163, 255, 0.1);
+    box-shadow: 0 8px 16px var(--accent-solid);
     background: var(--glass-bg);
   }
 }
@@ -242,6 +242,12 @@ const emit = defineEmits(['select'])
     &:hover {
       background: rgba(39, 174, 96, 0.35);
     }
+
+    [data-theme="dark"] & {
+      color: #52d685;
+      background: rgba(39, 174, 96, 0.35);
+      border-color: rgba(82, 214, 133, 0.6);
+    }
   }
 
   &.blue {
@@ -251,6 +257,12 @@ const emit = defineEmits(['select'])
 
     &:hover {
       background: rgba(46, 163, 255, 0.3);
+    }
+
+    [data-theme="dark"] & {
+      color: #6fd6ff;
+      background: rgba(46, 163, 255, 0.3);
+      border-color: rgba(111, 214, 255, 0.6);
     }
   }
 
@@ -262,6 +274,12 @@ const emit = defineEmits(['select'])
     &:hover {
       background: rgba(138, 43, 255, 0.3);
     }
+
+    [data-theme="dark"] & {
+      color: #d695ff;
+      background: rgba(138, 43, 255, 0.3);
+      border-color: rgba(214, 149, 255, 0.6);
+    }
   }
 
   &.sustainable {
@@ -272,6 +290,12 @@ const emit = defineEmits(['select'])
     &:hover {
       background: rgba(39, 174, 96, 0.35);
     }
+
+    [data-theme="dark"] & {
+      color: #52d685;
+      background: rgba(39, 174, 96, 0.35);
+      border-color: rgba(82, 214, 133, 0.6);
+    }
   }
 
   &.inclusive {
@@ -281,6 +305,12 @@ const emit = defineEmits(['select'])
 
     &:hover {
       background: rgba(138, 43, 255, 0.3);
+    }
+
+    [data-theme="dark"] & {
+      color: #d695ff;
+      background: rgba(138, 43, 255, 0.3);
+      border-color: rgba(214, 149, 255, 0.6);
     }
   }
 }

@@ -159,8 +159,8 @@ const toggleFaq = (index) => {
     margin: 0;
     font-size: 3rem;
     font-weight: 600;
-    text-shadow: var(--txt-hover);
     margin-bottom: 16px;
+    text-shadow: var(--txt-hover);
   }
 
   p {
@@ -170,6 +170,7 @@ const toggleFaq = (index) => {
     max-width: 600px;
     margin-left: auto;
     margin-right: auto;
+    text-shadow: var(--txt-hover);
   }
 }
 
@@ -352,7 +353,7 @@ const toggleFaq = (index) => {
 }
 
 .contact-link {
-  color: var(--color-sky);
+  color: var(--txt-hover);
   text-decoration: none;
   font-weight: 600;
   transition: all 0.3s ease;

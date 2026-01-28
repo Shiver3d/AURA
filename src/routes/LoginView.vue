@@ -307,7 +307,6 @@ async function submit() {
   outline: none;
   border-color: var(--color-sky);
   box-shadow: 0 0 12px rgba(46, 163, 255, 0.2);
-  background: rgba(255, 255, 255, 0.5);
 }
 
 /* Remember Me Checkbox */
@@ -386,14 +385,36 @@ async function submit() {
 
 .actions {
   display: flex;
-  justify-content: flex-end;
-  margin-top: 12px;
+  justify-content: center;
+  margin-top: 16px;
+  gap: 12px;
 }
 .btn {
-  justify-content: center;
+  display: inline-flex;
+  align-items: center;
   width: 30vw;
+  justify-content: center;
+  padding: 10px 14px;
+  background: var(--panel-bg);
+  border-radius: var(--radius);
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text);
+  cursor: pointer;
+  transition: all 0.3s ease;
   min-width: 120px;
-  transition: all 0.3s ease, transform 0.2s ease;
+}
+.btn:hover {
+  border-color: var(--accent-solid);
+  background: var(--glass-bg);
+  box-shadow: 0 8px 16px var(--accent-solid);
+}
+.btn:active {
+  opacity: 0.9;
+}
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 .link {

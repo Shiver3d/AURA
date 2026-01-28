@@ -281,6 +281,9 @@ onMounted(() => {
   animation: modalIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
   border-radius: var(--radius);
   border: 1px solid var(--glass-border);
+  background: var(--bg);
+  backdrop-filter: blur(12px) saturate(120%);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.1);
 }
 
 .close-btn {
@@ -393,6 +396,12 @@ onMounted(() => {
     &:hover {
       background: rgba(39, 174, 96, 0.35);
     }
+
+    [data-theme="dark"] & {
+      color: #52d685;
+      background: rgba(39, 174, 96, 0.35);
+      border-color: rgba(82, 214, 133, 0.6);
+    }
   }
 
   &.blue {
@@ -402,6 +411,12 @@ onMounted(() => {
 
     &:hover {
       background: rgba(46, 163, 255, 0.3);
+    }
+
+    [data-theme="dark"] & {
+      color: #6fd6ff;
+      background: rgba(46, 163, 255, 0.3);
+      border-color: rgba(111, 214, 255, 0.6);
     }
   }
 
@@ -413,6 +428,12 @@ onMounted(() => {
     &:hover {
       background: rgba(138, 43, 255, 0.3);
     }
+
+    [data-theme="dark"] & {
+      color: #d695ff;
+      background: rgba(138, 43, 255, 0.3);
+      border-color: rgba(214, 149, 255, 0.6);
+    }
   }
 
   &.sustainable {
@@ -423,6 +444,12 @@ onMounted(() => {
     &:hover {
       background: rgba(39, 174, 96, 0.35);
     }
+
+    [data-theme="dark"] & {
+      color: #52d685;
+      background: rgba(39, 174, 96, 0.35);
+      border-color: rgba(82, 214, 133, 0.6);
+    }
   }
 
   &.inclusive {
@@ -432,6 +459,12 @@ onMounted(() => {
 
     &:hover {
       background: rgba(138, 43, 255, 0.3);
+    }
+
+    [data-theme="dark"] & {
+      color: #d695ff;
+      background: rgba(138, 43, 255, 0.3);
+      border-color: rgba(214, 149, 255, 0.6);
     }
   }
 }

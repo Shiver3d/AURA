@@ -218,8 +218,8 @@ import { RouterLink } from "vue-router";
 
   &:hover {
     border-color: var(--color-sky);
-    transform: translateY(-4px);
-    box-shadow: var(--accent-solid);
+    box-shadow: 0 8px 16px var(--accent-solid);
+    background: var(--glass-bg);
   }
 
   svg {
@@ -309,7 +309,7 @@ import { RouterLink } from "vue-router";
 }
 
 .contact-link {
-  color: var(--color-sky);
+  color: var(--txt-hover);
   text-decoration: none;
   font-weight: 600;
   transition: all 0.3s ease;

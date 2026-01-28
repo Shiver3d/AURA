@@ -201,7 +201,7 @@ function goBack() {
   top: 12px;
   left: 12px;
   right: 12px;
-  height: 7vh;
+  height: 9vh;
   display: flex;
   align-items: center;
   justify-content: space-between;

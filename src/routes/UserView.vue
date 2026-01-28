@@ -838,10 +838,15 @@ onMounted(() => { loadData(); });
 /* Forms Styles */
 .settings-form {
   max-width: 500px;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
 }
 
 .form-group {
   margin-bottom: 1.5rem;
+  display: flex;
+  flex-direction: column;
 
   label {
     display: block;
@@ -884,6 +889,7 @@ onMounted(() => { loadData(); });
   color: var(--text);
   font-weight: 600;
   transition: all 0.3s ease;
+  align-self: flex-end;
 
   &:hover {
     border-color: var(--color-sky);
@@ -1073,13 +1079,13 @@ onMounted(() => { loadData(); });
 
   &:hover {
     border-color: var(--color-sky);
-    background: rgba(255, 255, 255, 0.18);
+    background: rgba(255, 255, 255, 0.233);
     transform: translateY(-2px);
   }
 
   &.active {
     border-color: var(--color-sky);
-    background: rgba(46, 163, 255, 0.15);
+    background: var(--btn-hover);
     box-shadow: 0 8px 24px rgba(46, 163, 255, 0.15);
   }
 }
@@ -1098,12 +1104,20 @@ onMounted(() => { loadData(); });
   .dashboard-card {
     border-radius: 16px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    flex-direction: column;
   }
   .sidebar {
     padding: 1.5rem;
     gap: 1.5rem;
     border-right: none;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    order: 2;
+    flex: 0 0 auto;
+    min-height: 35vh;
+  }
+  .content-area {
+    flex: 1 1 auto;
   }
   .avatar-small {
     width: 60px;
@@ -1124,6 +1138,7 @@ onMounted(() => { loadData(); });
   }
   .content-area {
     padding: 1.5rem;
+    order: 1;
   }
   .tab-header h2 {
     font-size: 1.5rem;
@@ -1150,6 +1165,9 @@ onMounted(() => { loadData(); });
   .btn-ghost {
     padding: 8px 14px;
     font-size: 0.9rem;
+    width: auto;
+    align-self: flex-end;
+    margin-top: 16px;
   }
   .modal {
     width: 90%;
@@ -1180,10 +1198,18 @@ onMounted(() => { loadData(); });
   .dashboard-card {
     border-radius: 12px;
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+    flex-direction: column;
   }
   .sidebar {
     padding: 1rem;
     gap: 1rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    order: 2;
+    flex: 0 0 auto;
+    min-height: 40vh;
+  }
+  .content-area {
+    flex: 1 1 auto;
   }
   .avatar-small {
     width: 50px;
@@ -1207,7 +1233,8 @@ onMounted(() => { loadData(); });
     margin-top: 0.5rem;
   }
   .content-area {
-    padding: 1rem;
+    padding: 12rem;
+    order: 1;
   }
   .tab-header {
     margin-bottom: 1.5rem;
@@ -1254,7 +1281,9 @@ onMounted(() => { loadData(); });
   .btn-ghost {
     padding: 8px 12px;
     font-size: 0.8rem;
-    width: 100%;
+    width: auto;
+    align-self: flex-end;
+    margin-top: 16px;
   }
   .theme-grid {
     grid-template-columns: repeat(2, 1fr);

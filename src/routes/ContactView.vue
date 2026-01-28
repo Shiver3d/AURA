@@ -232,6 +232,7 @@ ${form.value.message}
     max-width: 600px;
     margin-left: auto;
     margin-right: auto;
+    text-shadow: var(--txt-hover);
   }
 }
 
