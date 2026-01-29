@@ -1,0 +1,26 @@
+<svg width="200" height="200" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="flowGradient1_dark" x1="0" y1="100" x2="200" y2="100" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#00FFFF" stop-opacity="0.2"/> <stop offset="0.5" stop-color="#00E5FF" stop-opacity="1.0"/> <stop offset="1" stop-color="#9D50FF" stop-opacity="0.5"/> </linearGradient>
+    <linearGradient id="flowGradient2_dark" x1="200" y1="50" x2="0" y2="150" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFFFFF" stop-opacity="1.0"/> <stop offset="0.5" stop-color="#2EA3FF" stop-opacity="0.8"/>
+      <stop offset="1" stop-color="#00E5FF" stop-opacity="0"/>
+    </linearGradient>
+    <filter id="blurFlow">
+        <feGaussianBlur stdDeviation="3"/> </filter>
+  </defs>
+
+  <circle cx="100" cy="100" r="100" fill="#021025"/>
+
+  <path d="M10 150C50 180 100 120 150 140C200 160 180 80 150 50C120 20 50 50 30 80" stroke="url(#flowGradient1_dark)" stroke-width="10" stroke-linecap="round" opacity="0.6" filter="url(#blurFlow)"/>
+
+  <path d="M50 160C60 140 90 60 100 40" stroke="url(#flowGradient2_dark)" stroke-width="12" stroke-linecap="round"/>
+  
+  <path d="M100 40C110 60 140 140 150 160C160 180 120 180 100 160" stroke="url(#flowGradient1_dark)" stroke-width="12" stroke-linecap="round"/>
+  
+  <path d="M75 120C100 130 125 110 140 120" stroke="#FFFFFF" stroke-width="4" stroke-opacity="0.9" stroke-linecap="round"/>
+  
+  <circle cx="100" cy="40" r="5" fill="#FFFFFF">
+      <animate attributeName="opacity" values="0.7;1;0.7" dur="3s" repeatCount="indefinite"/>
+  </circle>
+</svg>

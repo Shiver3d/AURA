@@ -326,6 +326,102 @@
 }
 
 /* ============================================
+   Responsive Utilities using CLAMP()
+   ============================================ */
+
+/* Fluid Typography */
+@mixin font-size-h1() {
+  font-size: clamp(1.75rem, 5vw, 3rem);
+}
+
+@mixin font-size-h2() {
+  font-size: clamp(1.5rem, 4vw, 2rem);
+}
+
+@mixin font-size-h3() {
+  font-size: clamp(1.25rem, 3.5vw, 1.5rem);
+}
+
+@mixin font-size-h4() {
+  font-size: clamp(1rem, 2.5vw, 1.25rem);
+}
+
+@mixin font-size-base() {
+  font-size: clamp(0.875rem, 2vw, 1rem);
+}
+
+@mixin font-size-sm() {
+  font-size: clamp(0.75rem, 1.5vw, 0.875rem);
+}
+
+@mixin font-size-xs() {
+  font-size: clamp(0.65rem, 1.2vw, 0.75rem);
+}
+
+/* Fluid Spacing */
+@mixin padding-responsive() {
+  padding: clamp(12px, 3vw, 32px);
+}
+
+@mixin padding-responsive-lg() {
+  padding: clamp(20px, 5vw, 60px);
+}
+
+@mixin margin-responsive() {
+  margin: clamp(8px, 2vw, 24px);
+}
+
+@mixin margin-responsive-lg() {
+  margin: clamp(16px, 4vw, 48px);
+}
+
+@mixin gap-responsive() {
+  gap: clamp(8px, 2vw, 20px);
+}
+
+/* Fluid Button Sizing */
+@mixin btn-responsive() {
+  padding: clamp(8px, 2vw, 18px) clamp(12px, 3vw, 24px);
+  font-size: clamp(0.875rem, 1.5vw, 1.1rem);
+  min-width: clamp(100px, 20vw, 200px);
+  min-height: clamp(36px, 8vh, 56px);
+}
+
+/* Fluid Width Container */
+@mixin container-fluid() {
+  width: clamp(280px, 95vw, 1200px);
+  margin: 0 auto;
+}
+
+@mixin container-max-width($max: 760px) {
+  max-width: clamp(280px, 95vw, $max);
+  margin: 0 auto;
+}
+
+/* Fluid Border Radius */
+@mixin border-radius-responsive() {
+  border-radius: clamp(8px, 2vw, 16px);
+}
+
+/* Fluid Line Height */
+@mixin line-height-comfortable() {
+  line-height: 1.6;
+}
+
+/* Hero Section Responsive */
+@mixin hero-responsive() {
+  padding: clamp(40px, 10vh, 80px) 0;
+  margin: clamp(8vh, 12vh, 16vh) clamp(12px, 3vw, 32px);
+}
+
+/* Smooth viewport-based transitions for better mobile UX */
+@media (max-width: 768px) {
+  body {
+    overflow-x: hidden;
+  }
+}
+
+/* ============================================
    Base styles
    ============================================ */
 
@@ -434,7 +530,7 @@ h1, h2, h3, h4, h5, h6, p, span, div, a, input, textarea, select, button {
 .container { 
   max-width: 1200px; 
   margin: 0 auto; 
-  padding: 24px; 
+  padding: clamp(16px, 4vw, 32px); 
 }
 .center { 
   display: flex; 

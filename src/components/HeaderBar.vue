@@ -53,7 +53,16 @@
         <span class="label">IA</span>
       </button>
 
-      <button class="icon-btn" @click="onToggleTheme" :title="theme === 'dark' ? 'Modo Claro' : 'Modo Escuro'">
+      <!-- Search button (mobile only) -->
+      <button v-if="isMobile" :class="['icon-btn', { active: isSearchActive }]" @click="goSearch" title="Produtos">
+        <div class="icon-wrap">
+          <Icon icon="tabler:search" width="30" height="30" />
+        </div>
+        <span class="label">Buscar</span>
+      </button>
+
+      <!-- Theme button (desktop only) -->
+      <button v-else class="icon-btn" @click="onToggleTheme" :title="theme === 'dark' ? 'Modo Claro' : 'Modo Escuro'">
         <div class="icon-wrap">
           <Icon :icon="theme === 'dark' ? 'tabler:moon' : 'tabler:sun'" width="30" height="30" />
         </div>
@@ -189,87 +198,107 @@ const isHome = computed(() => route.path === "/home");
 const isHomeActive = computed(() => route.path === "/home");
 const isMRActive = computed(() => route.path === "/ai-analysis" || route.path === "/mr");
 const isUserActive = computed(() => route.path === "/user");
+const isSearchActive = computed(() => route.path === "/search");
+const isMobile = computed(() => typeof window !== "undefined" && window.innerWidth <= 768);
 
 function goBack() {
   router.back();
+}
+
+function goSearch() {
+  router.push("/search");
 }
 </script>
 
 <style scoped>
 .header {
   position: fixed;
-  top: 12px;
-  left: 12px;
-  right: 12px;
-  height: 9vh;
+  top: clamp(8px, 2vw, 16px);
+  left: clamp(8px, 2vw, 16px);
+  right: clamp(8px, 2vw, 16px);
+  height: clamp(8vh, 10vh, 12vh);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 12px 18px;
+  padding: clamp(10px, 2vw, 18px);
   z-index: 40;
 }
+
 .left .brand {
-  font-size: 14px;
+  font-size: clamp(12px, 1.5vw, 16px);
   color: var(--muted);
 }
+
 .back-btn-header {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 8px 14px;
+  gap: clamp(4px, 1vw, 8px);
+  padding: clamp(6px, 1.5vw, 12px) clamp(10px, 2vw, 16px);
   background: var(--panel-bg);
   border: 1px solid var(--glass-border);
   border-radius: 10px;
   color: var(--text);
   cursor: pointer;
-  font-size: 14px;
+  font-size: clamp(12px, 1.5vw, 16px);
   transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
   backdrop-filter: blur(8px);
 }
+
 .back-btn-header:hover {
   transform: translateX(-4px);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   background: var(--accent-solid);
 }
+
 .center {
   flex: 1;
   display: flex;
   justify-content: center;
 }
+
 .search input {
-  margin-left: 7vw;
-  width: 20vw;
-  padding: 10px 12px;
+  margin-left: clamp(4vw, 7vw, 12vw);
+  width: clamp(120px, 20vw, 320px);
+  padding: clamp(8px, 1.5vw, 12px);
   border-radius: 999px;
   border: 1px solid rgba(0, 0, 0, 0.06);
+  font-size: clamp(12px, 1.5vw, 14px);
 }
+
 .right {
   display: flex;
-  gap: 8px;
+  gap: clamp(6px, 1.5vw, 12px);
   align-items: center;
 }
+
 .icon-btn {
   color: var(--text);
   background: transparent;
   border: none;
-  padding: 8px;
+  padding: clamp(6px, 1.5vw, 10px);
   border-radius: 10px;
   cursor: pointer;
   display: flex;
+  flex-direction: column;
+  gap: clamp(4px, 1vw, 8px);
   align-items: center;
   justify-content: center;
   transition: background 0.2s ease, transform 0.2s ease;
 }
+
 .icon-btn:hover {
   background: rgba(255, 255, 255, 0.1);
   transform: scale(1.1);
 }
+
 .profile-btn {
-  width: 60px;
-  height: 60px;
+  width: clamp(48px, 10vw, 64px);
+  height: clamp(48px, 10vw, 64px);
   border-radius: 50%;
   overflow: hidden;
+  padding: 0;
 }
+
 .profile-avatar {
   width: 100%;
   height: 100%;
@@ -277,24 +306,24 @@ function goBack() {
   border-radius: 50%;
 }
 
-/* new styles for labels and active state */
-.icon-btn {
-  flex-direction: column;
-  gap: 6px;
-  padding: 6px 10px;
-}
+/* Icon wrapper and labels */
 .icon-wrap {
-  width: 30px;
-  height: 30px;
+  width: clamp(24px, 5vw, 32px);
+  height: clamp(24px, 5vw, 32px);
   display: flex;
   align-items: center;
   justify-content: center;
   border-radius: 10px;
 }
+
 .label {
-  font-size: 11px;
+  font-size: clamp(9px, 1.2vw, 13px);
   color: var(--muted);
+  text-align: center;
+  white-space: nowrap;
+  max-width: 60px;
 }
+
 .icon-btn.active .icon-wrap {
   background: var(--accent-solid);
   box-shadow: 0 6px 18px rgba(85, 81, 81, 0.075);
@@ -308,47 +337,54 @@ function goBack() {
     left: 0;
     right: 0;
     height: auto;
-    padding: 8px 12px;
+    padding: clamp(6px, 1.5vw, 12px);
     border-top-left-radius: 12px;
     border-top-right-radius: 12px;
     display: flex;
     justify-content: center;
   }
+  
   .center { display: none; }
   .left { display: none; }
-  .right { gap: 14px; }
-  .icon-btn { padding: 6px; }
+  .right { gap: clamp(10px, 2vw, 18px); }
+  .icon-btn { padding: clamp(4px, 1vw, 8px); }
+  
   .search input {
-    width: 16vw;
-    font-size: 14px;
+    width: clamp(80px, 16vw, 200px);
+    font-size: clamp(12px, 1.5vw, 14px);
   }
 }
 
 @media (max-width: 480px) {
   .header {
-    padding: 16px 16px;
-    gap: 4px;
+    padding: clamp(12px, 2vw, 18px);
+    gap: clamp(2px, 1vw, 6px);
   }
+  
   .icon-wrap { 
-    width: 70px; 
-    height: 50px; 
+    width: clamp(50px, 12vw, 70px); 
+    height: clamp(40px, 10vh, 54px); 
   }
+  
   .icon-wrap svg {
-    width: 30px;
-    height: 30px;
+    width: clamp(28px, 6vw, 38px);
+    height: clamp(28px, 6vw, 38px);
   }
+  
   .label { 
-    font-size: 15px; 
-    margin-top: 2px;
+    font-size: clamp(12px, 2vw, 16px); 
+    margin-top: clamp(1px, 0.5vw, 3px);
   }
+  
   .search input {
-    width: 12vw;
-    padding: 6px 8px;
-    font-size: 12px;
+    width: clamp(60px, 12vw, 120px);
+    padding: clamp(4px, 1vw, 8px);
+    font-size: clamp(11px, 1.3vw, 13px);
   }
+  
   .profile-avatar {
-    width: 30px;
-    height: 30px;
+    width: clamp(24px, 5vw, 32px);
+    height: clamp(24px, 5vw, 32px);
   }
 }
 </style>

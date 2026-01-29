@@ -507,7 +507,7 @@ onMounted(() => {
 .price {
   font-size: 1.4rem;
   font-weight: 800;
-  color: var(--color-sky);
+  color: var(--text);
   text-shadow: 0 0 12px rgba(46, 163, 255, 0.2);
 }
 

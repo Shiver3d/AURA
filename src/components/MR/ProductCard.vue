@@ -153,7 +153,7 @@ const emit = defineEmits(['select'])
   bottom: 10px;
   left: 10px;
   background: rgba(255, 215, 0, 0.15);
-  color: #ffd700;
+  color: var(--text);
   padding: 6px 10px;
   border-radius: 8px;
   font-size: 0.8rem;
@@ -327,7 +327,7 @@ const emit = defineEmits(['select'])
 .price {
   font-size: 1.3rem;
   font-weight: 800;
-  color: var(--color-sky);
+  color: var(--text);
   text-shadow: 0 0 12px rgba(46, 163, 255, 0.15);
   letter-spacing: -0.5px;
 }

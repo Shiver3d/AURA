@@ -57,10 +57,10 @@ onUnmounted(() => {
 <style scoped>
 .footer {
   position: fixed;
-  left: 12px;
-  right: 12px;
-  bottom: 12px;
-  padding: 10px 14px;
+  left: clamp(8px, 2vw, 16px);
+  right: clamp(8px, 2vw, 16px);
+  bottom: clamp(8px, 2vw, 16px);
+  padding: clamp(8px, 1.5vw, 14px);
   display: flex;
   justify-content: center;
   z-index: 30;
@@ -79,14 +79,14 @@ onUnmounted(() => {
   width: 100%;
   max-width: 1200px;
   color: var(--muted);
-  font-size: 13px;
+  font-size: clamp(11px, 1.5vw, 14px);
   align-items: center;
 }
 
 .links {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: clamp(8px, 2vw, 16px);
 }
 
 .footer-link {
@@ -94,6 +94,7 @@ onUnmounted(() => {
   text-decoration: none;
   transition: color 0.3s ease;
   cursor: pointer;
+  font-size: clamp(11px, 1.5vw, 13px);
 
   &:hover {
     color: var(--text);
@@ -103,47 +104,50 @@ onUnmounted(() => {
 
 .separator {
   opacity: 0.5;
+  font-size: clamp(10px, 1.5vw, 13px);
 }
 
 /* Responsive Design for Tablet (768px) */
 @media (max-width: 768px) {
   .footer {
-    left: 8px;
-    right: 8px;
-    bottom: 80px;
-    padding: 8px 10px;
+    left: clamp(6px, 1.5vw, 12px);
+    right: clamp(6px, 1.5vw, 12px);
+    bottom: clamp(60px, 15vh, 90px);
+    padding: clamp(6px, 1.5vw, 10px);
   }
 
   .footer-inner {
     flex-direction: column;
-    gap: 18px;
+    gap: clamp(14px, 3vw, 24px);
     text-align: center;
-    font-size: medium;
+    font-size: clamp(13px, 2vw, 16px);
   }
+  
   .links {
-    font-size: small;
-    gap: 60px;
+    font-size: clamp(11px, 1.5vw, 14px);
+    gap: clamp(40px, 8vw, 70px);
   }
 }
 
 /* Responsive Design for Mobile (480px) */
 @media (max-width: 480px) {
   .footer {
-    left: 4px;
-    right: 4px;
-    bottom: 14vh;
-    padding: 6px 8px;
+    left: clamp(2px, 1vw, 6px);
+    right: clamp(2px, 1vw, 6px);
+    bottom: clamp(12vh, 14vh, 18vh);
+    padding: clamp(4px, 1vw, 8px);
   }
+  
   .footer-inner {
     flex-direction: column;
-    gap: 4px;
+    gap: clamp(2px, 0.5vw, 8px);
     text-align: center;
-    font-size: 1rem;
+    font-size: clamp(14px, 2.5vw, 16px);
   }
+  
   .links {
-    font-size: 10px;
-    gap: 18px;
-    font-size: small;
+    font-size: clamp(9px, 1.5vw, 12px);
+    gap: clamp(12px, 2vw, 24px);
   }
 }
 </style>

@@ -11,17 +11,20 @@
 -->
 
 <template>
-  <div class="login-root center" :class="$rootClass">
+  <section class="login-root center" :class="$rootClass">
     <transition name="fade" mode="out-in">
       <div class="login-card glass" :key="isSignup">
-      <h1>Bem-vindo ao AURA</h1>
+      <div class="title-with-logo">
+        <h1>Bem-vindo ao AURA</h1>
+        <img src="/logo.svg" alt="AURA Logo" class="logo" />
+      </div>
       <p>Faça login ou crie uma conta para continuar.</p>
       <form @submit.prevent="submit">
         <label class="field" v-if="isSignup">
           <span>Nome</span>
           <input 
             v-model="name" 
-            placeholder="Seu nome, como será visto e chamado."
+            placeholder="Como será visto e chamado."
             @input="sanitizeName" 
           />
         </label>
@@ -40,7 +43,7 @@
           <PasswordInput
             v-model="password"
             :show-validation="isSignup"
-            placeholder="Mínimo 8 caracteres, 1 número, 1 caractere especial"
+            placeholder="Sua confidência."
             @validation-change="handlePasswordValidation"
           />
         </label>
@@ -109,7 +112,7 @@
       </div>
     </div>
   </transition>
-  </div>
+  </section>
 </template>
 
 <script setup>
@@ -267,13 +270,27 @@ async function submit() {
 }
 .login-card h1 {
   margin: 0 0 6px;
-  font-size: 20px;
   font-weight: 700;
   text-shadow: var(--txt-hover);
 }
+
+.title-with-logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.logo {
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+  filter: drop-shadow(0 0 8px rgba(46, 163, 255, 0.6)) drop-shadow(0 0 20px rgba(46, 163, 255, 0.3));
+  animation: glowPulse 3s ease-in-out infinite;
+}
 .login-card p {
   font-size: 20px;
-  margin: 16px 0 10px;
+  margin: 16px 0 20px;
   color: var(--muted);
 }
 .field {
@@ -292,7 +309,7 @@ async function submit() {
   padding: 12px 12px;
   border-radius: 8px;
   border: 2px solid var(--glass-border);
-  background: var(--glass-bg);
+  background: var(--panel-bg);
   color: var(--text);
   font-family: inherit;
   font-size: 0.95rem;
@@ -396,7 +413,6 @@ async function submit() {
   justify-content: center;
   padding: 10px 14px;
   background: var(--panel-bg);
-  border-radius: var(--radius);
   font-size: 1rem;
   font-weight: 600;
   color: var(--text);
@@ -608,6 +624,15 @@ async function submit() {
   }
   .modal-card h3 {
     font-size: 1.1rem;
+  }
+}
+
+@keyframes glowPulse {
+  0%, 100% {
+    filter: drop-shadow(0 0 8px rgba(46, 163, 255, 0.6)) drop-shadow(0 0 20px rgba(46, 163, 255, 0.3));
+  }
+  50% {
+    filter: drop-shadow(0 0 12px rgba(46, 163, 255, 0.8)) drop-shadow(0 0 28px rgba(46, 163, 255, 0.5));
   }
 }
 

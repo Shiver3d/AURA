@@ -860,7 +860,7 @@ onMounted(() => { loadData(); });
     padding: 12px;
     border-radius: 8px;
     border: 2px solid var(--glass-border);
-    background: var(--glass-bg);
+    background: var(--panel-bg);
     color: var(--text);
     font-family: inherit;
     transition: all 0.3s ease;
@@ -954,24 +954,26 @@ onMounted(() => { loadData(); });
   gap: 12px;
   justify-content: flex-end;
 
-  .btn-cancel {
-    padding: 10px 16px;
-    background: var(--glass-bg);
-    border: 2px solid var(--glass-border);
-    color: var(--text);
-    border-radius: 8px;
-    cursor: pointer;
-    transition: 0.3s ease;
-    font-weight: 600;
-    &:hover {
-      border-color: var(--color-sky);
-      background: rgba(255, 255, 255, 0.15);
-    }
-  }
+.btn-cancel {
+  background: var(--glass-bg);
+  border: 2px solid var(--glass-border);
+  padding: 10px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.8rem;
+  color: var(--text);
+  font-weight: 600;
+  transition: all 0.3s ease;
+  align-self: flex-end;
 
+  &:hover {
+    border-color: var(--color-sky);
+    background: rgba(255,255,255,0.15);
+  }
+}
   .btn-danger {
     padding: 10px 16px;
-    background: linear-gradient(90deg, #ff4757, #d63031);
+    background: #ff4757;
     color: white;
     border: 2px solid transparent;
     border-radius: 8px;
@@ -1003,13 +1005,13 @@ onMounted(() => { loadData(); });
   transition: all 0.3s ease;
   
   &.password-valid {
-    border-color: #27ae60 !important;
-    background: rgba(39, 174, 96, 0.05) !important;
+    border-color: #27ae60;
+    background: rgba(39, 174, 96, 0.05);
   }
   
   &.password-invalid {
-    border-color: #e74c3c !important;
-    background: rgba(231, 76, 60, 0.05) !important;
+    border-color: #e74c3c;
+    background: rgba(231, 76, 60, 0.05);
   }
 }
 
@@ -1185,114 +1187,5 @@ onMounted(() => { loadData(); });
   }
 }
 
-@media (max-width: 480px) {
-  .user-container {
-    padding: 0.5rem;
-  }
-  .back-btn {
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    width: auto;
-  }
-  .dashboard-card {
-    border-radius: 12px;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
-    flex-direction: column;
-  }
-  .sidebar {
-    padding: 1rem;
-    gap: 1rem;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
-    order: 2;
-    flex: 0 0 auto;
-    min-height: 40vh;
-  }
-  .content-area {
-    flex: 1 1 auto;
-  }
-  .avatar-small {
-    width: 50px;
-    height: 50px;
-    font-size: 1rem;
-  }
-  .welcome-text {
-    font-size: 0.9rem;
-  }
-  .nav-menu {
-    gap: 0.25rem;
-  }
-  .nav-btn {
-    padding: 8px 10px;
-    font-size: 0.8rem;
-    gap: 6px;
-  }
-  .logout-btn {
-    padding: 8px;
-    font-size: 0.8rem;
-    margin-top: 0.5rem;
-  }
-  .content-area {
-    padding: 12rem;
-    order: 1;
-  }
-  .tab-header {
-    margin-bottom: 1.5rem;
-  }
-  .tab-header h2 {
-    font-size: 1.2rem;
-    margin-bottom: 0.25rem;
-  }
-  .tab-header p {
-    font-size: 0.85rem;
-  }
-  .avatar-upload-section {
-    margin-bottom: 2rem;
-  }
-  .avatar-large {
-    width: 80px;
-    height: 80px;
-    font-size: 1.5rem;
-    border: 3px solid rgba(255, 255, 255, 0.1);
-  }
-  .history-section h3 {
-    font-size: 0.95rem;
-    margin-bottom: 0.5rem;
-  }
-  .history-list li {
-    padding: 8px;
-    font-size: 0.85rem;
-  }
-  .settings-form {
-    max-width: 100%;
-  }
-  .form-group {
-    margin-bottom: 1rem;
-  }
-  .form-group label {
-    font-size: 0.8rem;
-    margin-bottom: 4px;
-  }
-  .form-group input {
-    padding: 8px;
-    font-size: 13px;
-    border-radius: 6px;
-  }
-  .btn-ghost {
-    padding: 8px 12px;
-    font-size: 0.8rem;
-    width: auto;
-    align-self: flex-end;
-    margin-top: 16px;
-  }
-  .theme-grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 8px;
-  }
-  .theme-btn {
-    padding: 10px 6px;
-    border-radius: 8px;
-    gap: 6px;
-  }
-}
+
 </style>

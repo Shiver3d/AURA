@@ -78,7 +78,7 @@
 
         <div class="socials-grid">
           <a
-            href="https://linkedin.com/in/shiver3d"
+            href="https://www.linkedin.com/in/daniel-lopes-shiver3d/"
             target="_blank"
             rel="noopener noreferrer"
             class="social-card linkedin"
@@ -89,7 +89,7 @@
           </a>
 
           <a
-            href="https://twitter.com/shiver3d"
+            href="https://twitter.com/shiver3d_"
             target="_blank"
             rel="noopener noreferrer"
             class="social-card twitter"
@@ -275,7 +275,7 @@ ${form.value.message}
   select,
   textarea {
     padding: 12px 16px;
-    background: var(--glass-bg);
+    background: var(--panel-bg);
     border: 2px solid var(--glass-border);
     border-radius: 8px;
     color: var(--text);
@@ -291,7 +291,6 @@ ${form.value.message}
       outline: none;
       border-color: var(--color-sky);
       box-shadow: 0 0 0 3px rgba(46, 163, 255, 0.2);
-      background: rgba(255,255,255,0.5);
     }
 
     &:hover:not(:focus) {
@@ -322,25 +321,30 @@ ${form.value.message}
 }
 
 .btn {
-  padding: 14px 24px;
-  border: none;
-  border-radius: 8px;
-  font-weight: 700;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
+  padding: 10px 14px;
+  background: var(--panel-bg);
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text);
+  cursor: pointer;
+  transition: all 0.3s ease;
   gap: 8px;
-  margin-top: 12px;
+  min-width: 120px;
 
   &:hover:not(:disabled) {
-    transform: translateY(-2px);
+  border-color: var(--color-sky);
+  background: var(--glass-bg);
+  }
+
+  &:active:not(:disabled) {
+    opacity: 0.9;
   }
 
   &:disabled {
-    opacity: 0.7;
+    opacity: 0.5;
     cursor: not-allowed;
   }
 

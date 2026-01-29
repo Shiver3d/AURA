@@ -537,49 +537,54 @@ onMounted(() => {
 });
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 
 .btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.5rem;
-  width: 14vw;
-  height: 10vh;
-  margin: 19px;
-  padding: 0 12px;
+  font-size: clamp(1rem, 2.5vw, 1.5rem);
+  width: clamp(180px, 18vw, 280px);
+  height: clamp(44px, 9vh, 80px);
+  margin: clamp(12px, 3vw, 24px);
+  padding: 0 clamp(8px, 2vw, 18px);
   gap: 8px;
   border: 2px solid var(--color-sky);
   background: var(--panel-bg) !important;
 }
 
 .hero {
-  padding: 60px 0;
-  margin-top: 12vh;
-  margin-right: 2vw;
-  margin-left: 2vw;
+  padding: clamp(40px, 10vh, 80px) 0;
+  margin-top: clamp(8vh, 12vh, 16vh);
+  margin-right: clamp(12px, 3vw, 32px);
+  margin-left: clamp(12px, 3vw, 32px);
 }
+
 .hero-inner {
   text-align: center;
 }
+
 .hero-inner h1 {
-  font-size: 3rem;
-  margin-bottom: 6px;
+  font-size: clamp(1.75rem, 5vw, 3rem);
+  margin-bottom: clamp(4px, 1vw, 8px);
   font-weight: 700;
   text-shadow: var(--txt-hover);
 }
+
 .hero-inner p {
-  font-size: 1.2rem;
+  font-size: clamp(0.95rem, 2.5vw, 1.2rem);
   text-shadow: var(--txt-hover);
-  margin-bottom: 16px;
+  margin-bottom: clamp(12px, 2vw, 20px);
   color: var(--muted);
 }
+
 .hero-actions {
   display: flex;
-  gap: 12px;
+  gap: clamp(8px, 2vw, 16px);
   justify-content: center;
   flex-wrap: wrap;
 }
+
 .hero-actions .btn {
   display: inline-flex;
   align-items: center;
@@ -588,32 +593,32 @@ onMounted(() => {
 
 /* Social Feed Styles */
 .social-feed {
-  margin-top: 48px;
-  padding: 0 2vw 60px;
+  margin-top: clamp(28px, 6vw, 48px);
+  padding: 0 clamp(8px, 2vw, 32px) clamp(40px, 8vh, 80px);
   width: 100%;
 }
 
 .feed-header {
   max-width: 760px;
-  margin: 0 auto 40px;
+  margin: 0 auto clamp(28px, 5vw, 48px);
   text-align: left;
-  padding: 0 16px;
+  padding: 0 clamp(12px, 2vw, 24px);
 }
 
 .feed-title {
   text-align: center;
-  font-size: 2rem;
+  font-size: clamp(1.5rem, 4vw, 2rem);
   font-weight: 700;
-  margin: 0 0 8px 0;
+  margin: 0 0 clamp(6px, 1vw, 12px) 0;
   color: var(--text);
 }
 
 .feed-subtitle {
   text-align: center;
-  font-size: 0.95rem;
+  font-size: clamp(0.85rem, 2vw, 0.95rem);
   margin: 0;
   color: var(--muted);
-  line-height: 1.5;
+  line-height: 1.6;
 }
 
 .feed-container {
@@ -621,15 +626,15 @@ onMounted(() => {
   margin: 0 auto;
   display: flex;
   flex-direction: column;
-  gap: 16px;
-  padding: 0 16px;
+  gap: clamp(10px, 2vw, 18px);
+  padding: 0 clamp(12px, 2vw, 24px);
 }
 
 .post-card {
   background: var(--bg);
   border: 1px solid var(--glass-border);
   border-radius: var(--radius);
-  padding: 20px;
+  padding: clamp(16px, 3vw, 24px);
   transition: all 0.3s ease;
 }
 
@@ -643,20 +648,20 @@ onMounted(() => {
 .post-header {
   display: flex;
   align-items: center;
-  gap: 12px;
-  margin-bottom: 12px;
+  gap: clamp(10px, 2vw, 16px);
+  margin-bottom: clamp(10px, 2vw, 16px);
 }
 
 .avatar {
-  width: 44px;
-  height: 44px;
+  width: clamp(36px, 8vw, 48px);
+  height: clamp(36px, 8vw, 48px);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: 700;
   color: white;
-  font-size: 18px;
+  font-size: clamp(14px, 3vw, 20px);
   flex-shrink: 0;
   border: 2px solid rgba(255, 255, 255, 0.1);
 }
@@ -664,25 +669,25 @@ onMounted(() => {
 .user-info {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: clamp(1px, 0.5vw, 4px);
   flex: 1;
 }
 
 .username {
   margin: 0;
-  font-size: 0.95rem;
+  font-size: clamp(0.85rem, 2vw, 0.95rem);
   font-weight: 600;
   color: var(--text);
 }
 
 .timestamp {
-  font-size: 0.8rem;
+  font-size: clamp(0.7rem, 1.5vw, 0.8rem);
   color: var(--muted);
 }
 
 /* Post Image */
 .post-image-container {
-  margin: 12px -20px 0;
+  margin: clamp(10px, 2vw, 16px) clamp(-20px, -3vw, -32px) 0;
   border-radius: 0;
   overflow: hidden;
   background: rgba(253, 3, 3, 0.05);
@@ -691,7 +696,7 @@ onMounted(() => {
 .post-image {
   width: 100%;
   height: auto;
-  max-height: 350px;
+  max-height: clamp(250px, 60vw, 400px);
   object-fit: cover;
   cursor: pointer;
   transition: transform 0.3s ease;
@@ -704,8 +709,8 @@ onMounted(() => {
 
 /* Post Text */
 .post-text {
-  margin: 12px 0;
-  font-size: 0.95rem;
+  margin: clamp(10px, 2vw, 16px) 0;
+  font-size: clamp(0.85rem, 2vw, 0.95rem);
   line-height: 1.6;
   color: var(--text);
 }
@@ -717,22 +722,22 @@ onMounted(() => {
 /* Post Actions */
 .post-actions {
   display: flex;
-  gap: 16px;
-  padding-top: 12px;
+  gap: clamp(10px, 2vw, 20px);
+  padding-top: clamp(10px, 2vw, 16px);
   border-top: 1px solid var(--glass-border);
-  margin-top: 12px;
+  margin-top: clamp(10px, 2vw, 16px);
 }
 
 .action-btn {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 6px 0;
+  gap: clamp(4px, 1vw, 8px);
+  padding: clamp(4px, 1vw, 8px) 0;
   border: none;
   background: transparent;
   color: var(--muted);
   cursor: pointer;
-  font-size: 0.85rem;
+  font-size: clamp(0.75rem, 1.5vw, 0.9rem);
   transition: all 0.2s ease;
   border-radius: 4px;
 }
@@ -752,45 +757,45 @@ onMounted(() => {
 
 .action-count,
 .action-text {
-  font-size: 0.85rem;
+  font-size: clamp(0.75rem, 1.5vw, 0.9rem);
   font-weight: 500;
 }
 
 /* Comments Section */
 .comments-section {
-  margin-top: 16px;
-  padding-top: 12px;
+  margin-top: clamp(12px, 2vw, 20px);
+  padding-top: clamp(10px, 2vw, 16px);
   border-top: 1px solid var(--glass-border);
 }
 
 .comments-list {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  margin-bottom: 12px;
+  gap: clamp(6px, 1.5vw, 12px);
+  margin-bottom: clamp(10px, 2vw, 16px);
   max-height: 240px;
   overflow-y: auto;
 }
 
 .comment-item {
-  padding: 8px 12px;
+  padding: clamp(6px, 1.5vw, 12px);
   background: var(--panel-bg);
   border-radius: 6px;
   border-left: 2px solid var(--color-sky);
 }
 
 .comment-author {
-  font-size: 0.8rem;
+  font-size: clamp(0.7rem, 1.5vw, 0.8rem);
   font-weight: 600;
   color: var(--color-sky);
-  margin-bottom: 2px;
+  margin-bottom: clamp(1px, 0.5vw, 4px);
 }
 
 .comment-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 8px;
+  gap: clamp(6px, 1.5vw, 10px);
 }
 
 .delete-comment-btn {
@@ -798,7 +803,7 @@ onMounted(() => {
   border: none;
   color: var(--muted);
   cursor: pointer;
-  padding: 2px 4px;
+  padding: clamp(2px, 0.5vw, 4px);
   border-radius: 4px;
   transition: all 0.2s ease;
   display: flex;
@@ -812,34 +817,34 @@ onMounted(() => {
 }
 
 .comment-text {
-  font-size: 0.85rem;
+  font-size: clamp(0.8rem, 1.5vw, 0.9rem);
   color: var(--text);
-  line-height: 1.4;
+  line-height: 1.5;
   word-break: break-word;
 }
 
 .no-comments {
   text-align: center;
   color: var(--muted);
-  font-size: 0.85rem;
-  padding: 12px 0;
+  font-size: clamp(0.75rem, 1.5vw, 0.9rem);
+  padding: clamp(8px, 2vw, 16px) 0;
   margin: 0;
 }
 
 .comment-input-area {
   display: flex;
-  gap: 8px;
-  padding-top: 12px;
+  gap: clamp(6px, 1.5vw, 10px);
+  padding-top: clamp(10px, 2vw, 16px);
 }
 
 .comment-input {
   flex: 1;
-  padding: 8px 12px;
+  padding: clamp(6px, 1.5vw, 10px);
   border: 1px solid var(--glass-border);
   border-radius: 6px;
   background: var(--glass-bg);
   color: var(--text);
-  font-size: 0.85rem;
+  font-size: clamp(0.8rem, 1.5vw, 0.9rem);
   transition: all 0.3s ease;
 }
 
@@ -854,17 +859,18 @@ onMounted(() => {
 }
 
 .send-btn {
-  padding: 8px 12px;
+  padding: clamp(6px, 1.5vw, 10px) clamp(10px, 2vw, 16px);
   border: 1px solid var(--color-sky);
   border-radius: 6px;
   background: var(--bg);
   color: var(--color-sky);
   cursor: pointer;
-  font-size: 0.85rem;
+  font-size: clamp(0.75rem, 1.5vw, 0.9rem);
   transition: all 0.2s ease;
   display: flex;
   align-items: center;
   justify-content: center;
+  white-space: nowrap;
 }
 
 .send-btn:hover {
@@ -882,7 +888,7 @@ onMounted(() => {
   align-items: center;
   justify-content: center;
   z-index: 1000;
-  padding: 16px;
+  padding: clamp(12px, 3vw, 24px);
   animation: fadeIn 0.3s ease;
 }
 
@@ -895,7 +901,7 @@ onMounted(() => {
   width: 100%;
   max-width: 700px;
   max-height: 90vh;
-  border-radius: 20px;
+  border-radius: clamp(12px, 3vw, 20px);
   border: 1px solid var(--glass-border);
   background: var(--bg);
   backdrop-filter: blur(12px) saturate(120%);
@@ -908,10 +914,10 @@ onMounted(() => {
 
 .modal-close {
   position: absolute;
-  top: 12px;
-  right: 12px;
-  width: 40px;
-  height: 40px;
+  top: clamp(8px, 2vw, 16px);
+  right: clamp(8px, 2vw, 16px);
+  width: clamp(32px, 8vw, 44px);
+  height: clamp(32px, 8vw, 44px);
   border-radius: 50%;
   background: rgba(0, 0, 0, 0.4);
   border: none;
@@ -934,20 +940,20 @@ onMounted(() => {
   height: auto;
   display: block;
   object-fit: cover;
-  max-height: 400px;
+  max-height: clamp(250px, 60vw, 400px);
 }
 
 .modal-content {
   flex: 1;
   overflow-y: auto;
-  padding: 20px;
+  padding: clamp(16px, 3vw, 24px);
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: clamp(10px, 2vw, 16px);
 }
 
 .modal-text {
-  font-size: 0.95rem;
+  font-size: clamp(0.85rem, 2vw, 0.95rem);
   line-height: 1.6;
   color: var(--text);
   margin: 0;
@@ -957,54 +963,52 @@ onMounted(() => {
 .delete-confirm-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(4px);
+  background: rgba(0, 0, 0, 0.28);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 1001;
-  padding: 20px;
+  padding: clamp(16px, 3vw, 24px);
 }
 
 .delete-confirm-card {
-  width: 100%;
-  max-width: 400px;
-  background: var(--glass-bg);
-  border: 1px solid var(--glass-border);
-  border-radius: 16px;
-  padding: 28px;
+  width: 360px;
+  max-width: 94%;
+  background: var(--bg);
+  border-radius: 12px;
+  padding: 18px;
+  box-shadow: 0 8px 30px rgba(2, 6, 23, 0.16);
   display: flex;
   flex-direction: column;
-  gap: 16px;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-  backdrop-filter: blur(12px) saturate(120%);
+  gap: 12px;
 }
 
 .delete-confirm-header {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 8px;
   color: #ff3b30;
 }
 
 .delete-confirm-header h3 {
-  margin: 0;
-  font-size: 1.1rem;
+  margin: 0 0 12px;
+  font-size: 0.95rem;
   font-weight: 600;
   color: var(--text);
 }
 
 .delete-confirm-text {
-  margin: 0;
-  font-size: 0.9rem;
-  line-height: 1.5;
+  margin: 0 0 16px;
+  font-size: 0.95rem;
+  line-height: 1.6;
   color: var(--muted);
 }
 
 .delete-confirm-actions {
   display: flex;
-  gap: 12px;
-  margin-top: 8px;
+  gap: 8px;
+  justify-content: flex-end;
+  margin-top: 12px;
 }
 
 .cancel-btn,
@@ -1012,22 +1016,22 @@ onMounted(() => {
   flex: 1;
   padding: 10px 16px;
   border-radius: 8px;
-  border: 1px solid var(--glass-border);
-  font-size: 0.9rem;
+  border: 2px solid var(--glass-border);
+  font-size: 0.95rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
 .cancel-btn {
-  background: transparent;
+  background: var(--panel-bg);
   color: var(--text);
+  border: 2px solid var(--glass-border);
 }
 
 .cancel-btn:hover {
-  background: rgba(255, 255, 255, 0.05);
-  border-color: var(--color-sky);
-  color: var(--color-sky);
+  background: var(--glass-bg);
+  border-color: var(--muted);
 }
 
 .delete-btn {
@@ -1051,174 +1055,47 @@ onMounted(() => {
   opacity: 0;
 }
 
-/* Mobile Responsiveness */
+/* Mobile Responsiveness - Increase icon sizes in hero buttons */
 @media (max-width: 768px) {
-  .social-feed {
-    margin-top: 32px;
-    padding: 0 1vw 40px;
+  .btn svg {
+    width: 28px;
+    height: 28px;
   }
-
-  .feed-header {
-    padding: 0 8px;
-    margin-bottom: 28px;
-  }
-
-  .feed-title {
-    font-size: 1.5rem;
-    margin-bottom: 6px;
-  }
-
-  .feed-subtitle {
-    font-size: 0.9rem;
-  }
-
-  .feed-container {
-    padding: 0 8px;
-    gap: 12px;
-  }
-
-  .post-card {
+  
+  .delete-confirm-card {
+    width: 100%;
+    max-width: 94%;
     padding: 16px;
   }
-
-  .avatar {
-    width: 40px;
-    height: 40px;
-    font-size: 16px;
-  }
-
-  .username {
-    font-size: 0.9rem;
-  }
-
-  .timestamp {
-    font-size: 0.75rem;
-  }
-
-  .post-text {
-    font-size: 0.9rem;
-  }
-
-  .action-btn {
-    font-size: 0.8rem;
-    padding: 4px 0;
-  }
-
-  .modal-card {
-    border-radius: 16px;
-    max-width: 100%;
-  }
-
-  .modal-image {
-    max-height: 300px;
-  }
-
-  .modal-content {
-    padding: 16px;
+  
+  .delete-confirm-header h3 {
+    margin-bottom: 8px;
+    font-size: 0.95rem;
   }
 }
 
 @media (max-width: 480px) {
-  .social-feed {
-    margin-top: 24px;
-    padding: 0 0.5rem 30px;
+  .btn {
+    font-size: clamp(0.9rem, 2.5vw, 1.2rem);
   }
-
-  .feed-header {
-    padding: 0 4px;
-    margin-bottom: 20px;
+  
+  .btn svg {
+    width: 32px;
+    height: 32px;
   }
-
-  .feed-title {
-    font-size: 1.3rem;
-    margin-bottom: 4px;
-  }
-
-  .feed-subtitle {
-    font-size: 0.85rem;
-  }
-
-  .feed-container {
-    padding: 0 4px;
-    gap: 10px;
-  }
-
-  .post-card {
-    padding: 12px;
-  }
-
-  .post-image-container {
-    margin: 8px -12px 0;
-  }
-
-  .post-image {
-    max-height: 300px;
-  }
-
-  .avatar {
-    width: 36px;
-    height: 36px;
-    font-size: 14px;
-  }
-
-  .username {
-    font-size: 0.85rem;
-  }
-
-  .post-text {
-    font-size: 0.85rem;
-    margin: 8px 0;
-  }
-
-  .post-actions {
+  
+  .hero-actions .btn {
     gap: 12px;
-    margin-top: 8px;
-    padding-top: 8px;
   }
-
-  .action-btn {
-    font-size: 0.75rem;
-    padding: 4px 0;
+  
+  .delete-confirm-card {
+    width: 100%;
+    max-width: none;
+    padding: 16px;
   }
-
-  .comments-list {
-    gap: 6px;
-    max-height: 200px;
-  }
-
-  .comment-item {
-    padding: 6px 10px;
-    font-size: 0.8rem;
-  }
-
-  .comment-input {
-    font-size: 0.8rem;
-    padding: 6px 10px;
-  }
-
-  .send-btn {
-    padding: 6px 10px;
-  }
-
-  .modal-card {
-    border-radius: 12px;
-    max-width: 100%;
-  }
-
-  .modal-image {
-    max-height: 250px;
-  }
-
-  .modal-content {
-    padding: 12px;
-    gap: 10px;
-  }
-
-  .modal-close {
-    width: 36px;
-    height: 36px;
-    top: 8px;
-    right: 8px;
+  
+  .delete-confirm-header h3 {
+    font-size: 0.95rem;
   }
 }
 </style>

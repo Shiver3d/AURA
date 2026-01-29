@@ -121,7 +121,7 @@ function validatePassword() {
   padding: 12px 40px 12px 12px;
   border-radius: 8px;
   border: 2px solid var(--glass-border);
-  background: var(--glass-bg);
+  background: var(--panel-bg);
   color: var(--text);
   font-family: inherit;
   font-size: 0.95rem;
