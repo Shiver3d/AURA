@@ -32,7 +32,7 @@
 🤖 **Recebem recomendações inteligentes** via módulo de IA  
 👥 **Gerenciam perfil** e histórico de buscas  
 
-A visão é criar uma plataforma comunitária onde a beleza é **personalizada, acessível e colaborativa**. A ideia surgiu ao acessar um dos sites da empresa L'oreal e perceber que existe uma lacuna, específicamente de **acessibilidade**, portanto, criei o hub para por minhas ideias em prática e 
+A visão é criar uma plataforma comunitária onde a beleza é **personalizada, acessível e colaborativa**. A ideia surgiu ao acessar um dos sites da empresa L'oreal e perceber que existe uma lacuna, específicamente de **acessibilidade**, portanto, criei o hub para por minhas ideias em prática
 
 ---
 
