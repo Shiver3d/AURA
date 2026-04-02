@@ -273,8 +273,6 @@ padding: clamp(16px, 4vw, 32px);
 
 <div align="center">
 
-**Feito com ❤️ por Shiver3D**
-
 Ajude a beleza alcançar mais pessoas. ✨
 
 </div>
